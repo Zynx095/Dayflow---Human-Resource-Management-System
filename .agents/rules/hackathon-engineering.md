@@ -1,103 +1,55 @@
-﻿---
+---
 name: hackathon-engineering-rules
-description: Core rules for building reliable, judge-ready hackathon projects.
+description: Detailed operational rules for building reliable, judge-ready hackathon projects.
 activation: always_on
 ---
 
 # Hackathon Engineering Rules
 
-## Objective
+## Canonical Development Loop
+For any major or minor changes, consistently follow this singular development loop:
 
-Build the strongest demonstrable solution to the supplied hackathon problem within the available time.
+**PLAN → IMPLEMENT → RUN → OBSERVE → FIX → RETEST → VERIFY**
 
-## Priority
+## MVP Rule
+The complete primary workflow is more important than feature count. Prioritize:
+- **P0** = essential
+- **P1** = valuable
+- **P2** = enhancement
+- **P3** = unnecessary
 
-1. Solve the actual problem.
-2. Complete the primary user workflow.
-3. Produce working software.
-4. Satisfy mandatory requirements.
-5. Produce excellent UX.
-6. Add meaningful differentiation.
-7. Test aggressively.
-8. Prepare a compelling demo.
+## UI & Accessibility Rule
+Every important screen must handle:
+- loading
+- success
+- empty
+- error
 
-## Engineering
+**Accessibility Minimums:**
+- Keyboard navigation (tab support).
+- Visible focus states.
+- Readable text contrast.
+- Semantic HTML controls.
+- Descriptive labels for inputs.
+- Useful, actionable error messages.
+- Reasonable touch target sizes (mobile-friendly).
+- Responsive layout across breakpoints.
 
-Never invent requirements.
+## Data Rule
+Use real or dynamic data where the hackathon requires it. Do not hide static mock data behind fake functionality. Clearly labeled seed/demo data used only for initialization is allowed.
 
-Never claim an implementation exists unless it has been verified.
+## Security Rule
+Never commit:
+- API keys
+- passwords
+- access tokens
+- credentials
+- private certificates
 
-Never add technology merely because it is fashionable.
+*Security Checkpoint:* A simple security review (scanning for `password`, `key`, `token`, `secret`, `bearer`) must occur before major commits and before finalization.
 
-Prefer simple architectures that can be completed and demonstrated reliably.
+## Git Rule
+Every team member must make meaningful contributions. Use focused commits. Do not destroy history. Do not use destructive Git commands without approval.
 
-Use real/dynamic data where required.
-
-Validate user input at system boundaries.
-
-Handle loading, empty, success, and error states.
-
-Keep secrets out of source control.
-
-## AI
-
-Use AI only when it provides genuine value.
-
-Do not add an AI feature merely to make the project appear innovative.
-
-Do not fabricate AI outputs, metrics, or capabilities.
-
-Provide sensible fallback behavior when practical.
-
-## Development
-
-Before large changes:
-
-PLAN -> IMPLEMENT -> TEST -> VERIFY
-
-For small changes:
-
-IMPLEMENT -> TEST -> VERIFY
-
-Do not modify unrelated files.
-
-Do not repeatedly retry an identical failed approach.
-
-When something fails, inspect the actual error and diagnose the root cause.
-
-## UI/UX
-
-The interface must:
-
-- be responsive
-- have clear navigation
-- have visual hierarchy
-- have obvious primary actions
-- provide feedback
-- handle loading
-- handle empty states
-- handle errors
-- avoid dead controls
-- avoid fake functionality
-
-## Git
-
-Use meaningful commits.
-
-Do not destroy history.
-
-Do not use destructive Git commands without approval.
-
-## Hackathon Time
-
-Protect the MVP.
-
-Cut P2/P3 features before compromising the P0 workflow.
-
-No new major features after the feature-freeze stage.
-
-## Verification
-
-A feature is not complete because code was generated.
-
-A feature is complete only after functional verification.
+## Final Verification Rule
+Never claim "works" or that an implementation exists unless it has been verified with evidence. A feature is complete only after functional verification.
