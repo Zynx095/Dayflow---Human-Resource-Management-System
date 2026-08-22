@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Clock, Calendar, CheckCircle2 } from "lucide-react";
+import { Clock, Calendar, CheckCircle2, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchApi } from "@/lib/api";
 
@@ -12,28 +12,42 @@ export default function DashboardPage() {
   const [attendance, setAttendance] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchToday = () => {
+    setLoading(true);
     fetchApi("/attendance/today")
       .then((data) => setAttendance(data.record))
       .catch(() => setAttendance(null))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchToday();
   }, []);
 
+  const [checkingIn, setCheckingIn] = useState(false);
+  const [checkingOut, setCheckingOut] = useState(false);
+
   const handleCheckIn = async () => {
+    setCheckingIn(true);
     try {
-      const res = await fetchApi("/attendance/check-in", { method: "POST" });
-      setAttendance(res.check_in_record || { check_in: res.check_in, status: 'present' });
+      await fetchApi("/attendance/check-in", { method: "POST" });
+      fetchToday();
     } catch (e: any) {
       alert(e.message || "Failed to check in");
+    } finally {
+      setCheckingIn(false);
     }
   };
 
   const handleCheckOut = async () => {
+    setCheckingOut(true);
     try {
-      const res = await fetchApi("/attendance/check-out", { method: "POST" });
-      setAttendance(res.record || { ...attendance, check_out: res.check_out });
+      await fetchApi("/attendance/check-out", { method: "POST" });
+      fetchToday();
     } catch (e: any) {
       alert(e.message || "Failed to check out");
+    } finally {
+      setCheckingOut(false);
     }
   };
 
@@ -65,7 +79,8 @@ export default function DashboardPage() {
                   </p>
                 </div>
                 {!attendance.check_out && (
-                  <Button onClick={handleCheckOut} variant="secondary" className="w-full">
+                  <Button onClick={handleCheckOut} variant="secondary" className="w-full" disabled={checkingOut}>
+                    {checkingOut ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                     Check Out
                   </Button>
                 )}
@@ -76,7 +91,8 @@ export default function DashboardPage() {
                   <p className="text-2xl font-bold">Not Started</p>
                   <p className="text-xs text-muted-foreground mt-1">You haven't checked in yet today.</p>
                 </div>
-                <Button onClick={handleCheckIn} className="w-full">
+                <Button onClick={handleCheckIn} className="w-full" disabled={checkingIn}>
+                  {checkingIn ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                   Check In Now
                 </Button>
               </div>

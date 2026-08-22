@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Calendar, Clock, LogOut, Users } from "lucide-react";
+import { LayoutDashboard, Calendar, Clock, LogOut, Users, DollarSign } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
 export function Sidebar() {
@@ -16,10 +16,12 @@ export function Sidebar() {
     { href: "/hr", label: "Dashboard", icon: LayoutDashboard },
     { href: "/hr/employees", label: "Employees", icon: Users },
     { href: "/hr/leave", label: "Leave Requests", icon: Calendar },
+    { href: "/hr/payroll", label: "Payroll", icon: DollarSign },
   ] : [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard/attendance", label: "Attendance", icon: Clock },
     { href: "/dashboard/leave", label: "Leave", icon: Calendar },
+    { href: "/dashboard/payroll", label: "Payroll", icon: DollarSign },
   ];
 
   return (

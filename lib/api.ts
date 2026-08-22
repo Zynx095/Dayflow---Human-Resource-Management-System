@@ -32,6 +32,11 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   const data = await response.json().catch(() => null);
 
   if (!response.ok) {
+    if (response.status === 401 || response.status === 403) {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('dayflow:unauthorized'));
+      }
+    }
     throw new Error(data?.message || data?.error || 'API request failed');
   }
 
