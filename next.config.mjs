@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*' // (Change 5000 to whatever port your backend runs on if different)
+        destination: 'http://localhost:3001/api/:path*' // Changed to 3001 to match backend
       }
     ];
   }

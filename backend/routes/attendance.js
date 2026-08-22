@@ -18,14 +18,14 @@ router.post('/check-in', authenticateToken, requireRole('employee'), async (req,
     const db = await getDb();
 
     // Check if already checked in today
-    const existing = await db.get('SELECT * FROM attendance WHERE employee_id = ? AND date = ?', [employee_id, today]);
+    const existing = await db.get('SELECT * FROM attendance WHERE employee_id = $1 AND date = $2', [employee_id, today]);
     if (existing) {
       return res.status(400).json({ error: 'Already checked in today.' });
     }
 
     const now = new Date().toISOString();
     const result = await db.run(
-      'INSERT INTO attendance (employee_id, date, check_in, status) VALUES (?, ?, ?, ?)',
+      'INSERT INTO attendance (employee_id, date, check_in, status) VALUES ($1, $2, $3, $4) RETURNING id',
       [employee_id, today, now, 'present']
     );
 
@@ -44,7 +44,7 @@ router.post('/check-out', authenticateToken, requireRole('employee'), async (req
     const today = getTodayString();
     const db = await getDb();
 
-    const record = await db.get('SELECT * FROM attendance WHERE employee_id = ? AND date = ?', [employee_id, today]);
+    const record = await db.get('SELECT * FROM attendance WHERE employee_id = $1 AND date = $2', [employee_id, today]);
     
     if (!record) {
       return res.status(400).json({ error: 'Cannot check out before checking in today.' });
@@ -63,7 +63,7 @@ router.post('/check-out', authenticateToken, requireRole('employee'), async (req
     const nowStr = now.toISOString();
 
     await db.run(
-      'UPDATE attendance SET check_out = ?, worked_hours = ?, updated_at = ? WHERE id = ?',
+      'UPDATE attendance SET check_out = $1, worked_hours = $2, updated_at = $3 WHERE id = $4',
       [nowStr, workedHours, nowStr, record.id]
     );
 
@@ -80,7 +80,7 @@ router.get('/today', authenticateToken, requireRole('employee'), async (req, res
     const today = getTodayString();
     const db = await getDb();
 
-    const record = await db.get('SELECT * FROM attendance WHERE employee_id = ? AND date = ?', [employee_id, today]);
+    const record = await db.get('SELECT * FROM attendance WHERE employee_id = $1 AND date = $2', [employee_id, today]);
     res.json({ record: record || null });
   } catch (err) {
     console.error(err);
@@ -95,7 +95,7 @@ router.get('/weekly', authenticateToken, requireRole('employee'), async (req, re
     
     // Last 7 records (or based on date string if strictly last 7 days)
     const records = await db.all(
-      'SELECT * FROM attendance WHERE employee_id = ? ORDER BY date DESC LIMIT 7',
+      'SELECT * FROM attendance WHERE employee_id = $1 ORDER BY date DESC LIMIT 7',
       [employee_id]
     );
     

@@ -32,9 +32,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const token = getToken();
+    const publicPaths = ['/login', '/signup', '/'];
     if (!token) {
       setLoading(false);
-      if (pathname !== '/login') {
+      if (!publicPaths.includes(pathname)) {
         router.push('/login');
       }
       return;
@@ -48,7 +49,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .catch(() => {
         removeToken();
         setUser(null);
-        if (pathname !== '/login') {
+        const publicPaths = ['/login', '/signup', '/'];
+        if (!publicPaths.includes(pathname)) {
           router.push('/login');
         }
       })
@@ -82,7 +84,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const handleUnauthorized = () => {
       removeToken();
       setUser(null);
-      if (pathname !== '/login') {
+      const publicPaths = ['/login', '/signup', '/'];
+      if (!publicPaths.includes(pathname)) {
         router.push('/login');
       }
     };

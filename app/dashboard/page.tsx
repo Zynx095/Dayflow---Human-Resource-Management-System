@@ -25,7 +25,10 @@ export default function DashboardPage() {
     setError(null);
     fetchApi("/attendance/today")
       .then((data) => setAttendance(data.record))
-      .catch(() => setAttendance(null))
+      .catch((err) => {
+        setAttendance(null);
+        setError(err.message || "Failed to load attendance");
+      })
       .finally(() => setLoading(false));
   };
 
@@ -81,6 +84,15 @@ export default function DashboardPage() {
               {loading ? (
                 <div className="flex justify-center items-center h-24">
                   <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : error ? (
+                <div className="space-y-4">
+                  <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md border border-destructive/20">
+                    {error}
+                  </div>
+                  <Button onClick={fetchToday} variant="outline" className="w-full">
+                    Try Again
+                  </Button>
                 </div>
               ) : attendance ? (
                 <div className="space-y-4">

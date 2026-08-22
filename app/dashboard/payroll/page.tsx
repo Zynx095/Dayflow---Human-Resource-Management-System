@@ -18,12 +18,22 @@ interface PayrollRecord {
 export default function PayrollPage() {
   const [records, setRecords] = useState<PayrollRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchRecords = () => {
+    setLoading(true);
+    setError(null);
     fetchApi("/payroll/me")
       .then(data => setRecords(data.records || []))
-      .catch(() => setRecords([]))
+      .catch((err) => {
+        setRecords([]);
+        setError(err.message || "Failed to load payroll records.");
+      })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchRecords();
   }, []);
 
   return (
@@ -42,6 +52,15 @@ export default function PayrollPage() {
           {loading ? (
             <div className="flex justify-center p-8">
               <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : error ? (
+            <div className="text-center p-8 space-y-4">
+              <div className="text-sm text-destructive bg-destructive/10 p-4 rounded-md border border-destructive/20 inline-block">
+                {error}
+              </div>
+              <div>
+                <button onClick={fetchRecords} className="text-sm font-medium underline text-primary">Try Again</button>
+              </div>
             </div>
           ) : records.length === 0 ? (
             <div className="text-center p-8 text-muted-foreground border-2 border-dashed rounded-lg">

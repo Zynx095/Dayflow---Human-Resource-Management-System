@@ -24,12 +24,22 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  let response;
+  try {
+    response = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers,
+    });
+  } catch {
+    throw new Error('Unable to connect to Dayflow services. Please try again.');
+  }
 
-  const data = await response.json().catch(() => null);
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    data = null;
+  }
 
   if (!response.ok) {
     if (response.status === 401 || response.status === 403) {
@@ -37,6 +47,11 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
         window.dispatchEvent(new Event('dayflow:unauthorized'));
       }
     }
+    
+    if (response.status >= 500) {
+      throw new Error('Unable to process your request at this time (Server Error). Please try again.');
+    }
+
     throw new Error(data?.message || data?.error || 'API request failed');
   }
 

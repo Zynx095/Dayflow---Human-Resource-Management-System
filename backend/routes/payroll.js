@@ -17,7 +17,7 @@ router.get('/me', authenticateToken, requireRole('employee'), async (req, res) =
     const records = await db.all(
       `SELECT p.id, p.pay_period, p.base_salary, p.allowances, p.deductions, p.net_salary, p.created_at, p.updated_at
        FROM payroll p 
-       WHERE p.employee_id = ?
+       WHERE p.employee_id = $1
        ORDER BY p.created_at DESC`,
       [employee_id]
     );
@@ -62,7 +62,7 @@ router.get('/:employeeId', authenticateToken, requireRole('hr'), async (req, res
     const db = await getDb();
     
     // Ensure employee exists
-    const employee = await db.get('SELECT id FROM employees WHERE id = ?', [employeeId]);
+    const employee = await db.get('SELECT id FROM employees WHERE id = $1', [employeeId]);
     if (!employee) {
       return res.status(404).json({ error: 'Employee not found' });
     }
@@ -70,7 +70,7 @@ router.get('/:employeeId', authenticateToken, requireRole('hr'), async (req, res
     const records = await db.all(
       `SELECT p.id, p.pay_period, p.base_salary, p.allowances, p.deductions, p.net_salary, p.created_at, p.updated_at
        FROM payroll p 
-       WHERE p.employee_id = ?
+       WHERE p.employee_id = $1
        ORDER BY p.created_at DESC`,
       [employeeId]
     );

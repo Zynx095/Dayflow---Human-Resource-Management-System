@@ -1,8 +1,8 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_hackathon_key_do_not_commit_in_real_life';
 
-function authenticateToken(req, res, next) {
+export function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -15,7 +15,7 @@ function authenticateToken(req, res, next) {
   });
 }
 
-function authorizeRole(role) {
+export function requireRole(role) {
   return (req, res, next) => {
     if (!req.user || req.user.role !== role) {
       return res.status(403).json({ error: 'Forbidden: Insufficient permissions' });
@@ -23,5 +23,3 @@ function authorizeRole(role) {
     next();
   };
 }
-
-module.exports = { authenticateToken, authorizeRole };

@@ -31,7 +31,7 @@ router.post('/', authenticateToken, requireRole('employee'), async (req, res) =>
 
     const nowStr = new Date().toISOString();
     const result = await db.run(
-      'INSERT INTO leave_requests (employee_id, leave_type, start_date, end_date, reason, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO leave_requests (employee_id, leave_type, start_date, end_date, reason, status, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
       [employee_id, leave_type, start_date, end_date, reason, 'PENDING', nowStr, nowStr]
     );
 
@@ -49,7 +49,7 @@ router.get('/my', authenticateToken, requireRole('employee'), async (req, res) =
     const db = await getDb();
     
     const records = await db.all(
-      'SELECT * FROM leave_requests WHERE employee_id = ? ORDER BY created_at DESC',
+      'SELECT * FROM leave_requests WHERE employee_id = $1 ORDER BY created_at DESC',
       [employee_id]
     );
     
@@ -82,7 +82,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
     const db = await getDb();
     
-    const record = await db.get('SELECT * FROM leave_requests WHERE id = ?', [id]);
+    const record = await db.get('SELECT * FROM leave_requests WHERE id = $1', [id]);
     
     if (!record) {
       return res.status(404).json({ error: 'Leave request not found' });
@@ -107,7 +107,7 @@ router.post('/:id/approve', authenticateToken, requireRole('hr'), async (req, re
     const { admin_comment } = req.body;
     const db = await getDb();
     
-    const record = await db.get('SELECT * FROM leave_requests WHERE id = ?', [id]);
+    const record = await db.get('SELECT * FROM leave_requests WHERE id = $1', [id]);
     if (!record) return res.status(404).json({ error: 'Leave request not found' });
     
     if (record.status !== 'PENDING') {
@@ -116,7 +116,7 @@ router.post('/:id/approve', authenticateToken, requireRole('hr'), async (req, re
     
     const nowStr = new Date().toISOString();
     await db.run(
-      'UPDATE leave_requests SET status = ?, admin_comment = ?, updated_at = ? WHERE id = ?',
+      'UPDATE leave_requests SET status = $1, admin_comment = $2, updated_at = $3 WHERE id = $4',
       ['APPROVED', admin_comment || null, nowStr, id]
     );
     
@@ -134,7 +134,7 @@ router.post('/:id/reject', authenticateToken, requireRole('hr'), async (req, res
     const { admin_comment } = req.body;
     const db = await getDb();
     
-    const record = await db.get('SELECT * FROM leave_requests WHERE id = ?', [id]);
+    const record = await db.get('SELECT * FROM leave_requests WHERE id = $1', [id]);
     if (!record) return res.status(404).json({ error: 'Leave request not found' });
     
     if (record.status !== 'PENDING') {
@@ -143,7 +143,7 @@ router.post('/:id/reject', authenticateToken, requireRole('hr'), async (req, res
     
     const nowStr = new Date().toISOString();
     await db.run(
-      'UPDATE leave_requests SET status = ?, admin_comment = ?, updated_at = ? WHERE id = ?',
+      'UPDATE leave_requests SET status = $1, admin_comment = $2, updated_at = $3 WHERE id = $4',
       ['REJECTED', admin_comment || null, nowStr, id]
     );
     

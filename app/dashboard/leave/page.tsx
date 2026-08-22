@@ -24,15 +24,20 @@ export default function LeavePage() {
   
   const [requests, setRequests] = useState<LeaveRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
   const fetchMyLeaves = () => {
     setLoading(true);
+    setFetchError(null);
     fetchApi("/leave/my")
       .then(data => setRequests(data.records || []))
-      .catch(() => setRequests([]))
+      .catch((err) => {
+        setRequests([]);
+        setFetchError(err.message || "Failed to load leave history");
+      })
       .finally(() => setLoading(false));
   };
 
@@ -143,6 +148,11 @@ export default function LeavePage() {
             {loading ? (
               <div className="flex justify-center p-4">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : fetchError ? (
+              <div className="text-center p-4 space-y-3 border-2 border-dashed rounded-lg border-destructive/20 bg-destructive/5">
+                <p className="text-sm text-destructive font-medium">{fetchError}</p>
+                <Button variant="outline" size="sm" onClick={fetchMyLeaves}>Try Again</Button>
               </div>
             ) : requests.length === 0 ? (
               <div className="text-center p-4 text-muted-foreground border-2 border-dashed rounded-lg">
