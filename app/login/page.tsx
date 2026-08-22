@@ -26,7 +26,8 @@ export default function LoginPage() {
       });
       
       login(data.token, data.user);
-    } catch (err: any) {
+    } catch (e: unknown) {
+      const err = e as Error;
       setError(err.message || "Invalid credentials");
       setLoading(false);
     }
