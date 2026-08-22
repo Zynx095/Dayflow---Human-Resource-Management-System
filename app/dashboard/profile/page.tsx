@@ -114,7 +114,7 @@ export default function EmployeeProfile() {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">My Profile</h1>
+        <h1 className="text-3xl font-display font-bold tracking-tight">My Profile</h1>
         <p className="text-muted-foreground mt-1">View and manage your personal information</p>
       </div>
 
@@ -125,15 +125,15 @@ export default function EmployeeProfile() {
       )}
       
       {success && (
-        <div className="p-4 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md text-sm">
+        <div className="p-4 bg-success/10 text-success border border-success/20 rounded-md text-sm">
           {success}
         </div>
       )}
 
-      <div className="bg-card border rounded-lg shadow-sm divide-y divide-border">
+      <div className="bg-card border border-border rounded-lg shadow-sm divide-y divide-border">
         {/* Profile Info Section (Read Only) */}
         <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Personal Information</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <div className="text-sm font-medium text-muted-foreground">Name</div>
@@ -147,8 +147,8 @@ export default function EmployeeProfile() {
         </div>
 
         {/* Job Info Section (Read Only) */}
-        <div className="p-6 bg-muted/20">
-          <h3 className="text-lg font-semibold mb-4">Job Information</h3>
+        <div className="p-6 bg-secondary/30">
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Job Information</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <div className="text-sm font-medium text-muted-foreground">Employee ID</div>
@@ -166,12 +166,12 @@ export default function EmployeeProfile() {
         </div>
 
         {/* Salary Section (Read Only) */}
-        <div className="p-6 bg-muted/20">
-          <h3 className="text-lg font-semibold mb-4">Salary Information</h3>
+        <div className="p-6 bg-secondary/30">
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Salary Information</h3>
           <div className="grid grid-cols-1 gap-4">
             <div>
               <div className="text-sm font-medium text-muted-foreground">Base Salary</div>
-              <div className="mt-1 text-xl font-medium text-emerald-600">
+              <div className="mt-1 text-xl font-medium text-success">
                 {employee.salary ? formatINR(employee.salary) : "Not assigned"}
               </div>
             </div>
@@ -202,7 +202,7 @@ export default function EmployeeProfile() {
         </div>
 
         <div className="p-6 flex justify-end">
-          <Button onClick={handleSave} disabled={saving} className="min-w-[120px]">
+          <Button onClick={handleSave} disabled={saving} className="min-w-[120px] bg-primary text-primary-foreground hover:bg-primary/90">
             {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
             Save Profile
           </Button>

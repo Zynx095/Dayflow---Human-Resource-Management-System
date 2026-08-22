@@ -49,31 +49,31 @@ export default function HrPayrollPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Company Payroll</h1>
+        <h1 className="text-3xl font-display font-bold tracking-tight text-foreground">Company Payroll</h1>
         <p className="text-muted-foreground mt-2">Overview of all employee salaries and compensations.</p>
       </div>
 
-      <Card>
-        <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-2">
+      <Card className="border-border warm-shadow-md bg-card">
+        <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-border bg-secondary/30">
           <div>
-            <CardTitle>All Payslips</CardTitle>
-            <CardDescription>View payroll records across the company.</CardDescription>
+            <CardTitle className="text-foreground font-display">All Payslips</CardTitle>
+            <CardDescription className="text-muted-foreground">View payroll records across the company.</CardDescription>
           </div>
           <div className="relative w-full md:w-64">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search employee..."
-              className="pl-8"
+              className="pl-9 bg-card border-border focus-visible:ring-primary/20 text-foreground"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {loading ? (
             <div className="flex justify-center p-8">
-              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
           ) : error ? (
             <div className="text-center p-8 space-y-4">
@@ -81,42 +81,49 @@ export default function HrPayrollPage() {
                 {error}
               </div>
               <div>
-                <button onClick={fetchRecords} className="text-sm font-medium underline text-primary">Try Again</button>
+                <button onClick={fetchRecords} className="text-sm font-medium underline text-primary hover:text-primary/80">Try Again</button>
               </div>
             </div>
           ) : records.length === 0 ? (
-            <div className="text-center p-8 text-muted-foreground border-2 border-dashed rounded-lg">
+            <div className="text-center p-8 text-muted-foreground border-2 border-dashed border-border rounded-lg m-4">
               No payroll records found.
             </div>
           ) : (
             <div className="relative w-full overflow-auto">
               <table className="w-full caption-bottom text-sm">
-                <thead className="[&_tr]:border-b">
-                  <tr className="border-b transition-colors hover:bg-muted/50 text-muted-foreground">
+                <thead className="[&_tr]:border-b border-border">
+                  <tr className="border-b border-border transition-colors hover:bg-secondary/50 text-muted-foreground bg-secondary/50">
                     <th className="h-12 px-4 text-left font-medium">Employee</th>
                     <th className="h-12 px-4 text-left font-medium">Pay Period</th>
                     <th className="h-12 px-4 text-right font-medium">Base Salary</th>
-                    <th className="h-12 px-4 text-right font-medium text-green-600">Allowances</th>
-                    <th className="h-12 px-4 text-right font-medium text-red-600">Deductions</th>
+                    <th className="h-12 px-4 text-right font-medium text-[hsl(152,45%,38%)]">Allowances</th>
+                    <th className="h-12 px-4 text-right font-medium text-destructive">Deductions</th>
                     <th className="h-12 px-4 text-right font-medium text-primary">Net Pay</th>
                   </tr>
                 </thead>
-                <tbody className="[&_tr:last-child]:border-0">
+                <tbody className="[&_tr:last-child]:border-0 divide-y divide-border">
                   {filteredRecords.length > 0 ? filteredRecords.map((record) => (
-                    <tr key={record.id} className="border-b transition-colors hover:bg-muted/50">
+                    <tr key={record.id} className="transition-colors hover:bg-secondary/40 bg-card">
                       <td className="p-4 align-middle">
-                        <p className="font-medium">{record.name}</p>
-                        <p className="text-xs text-muted-foreground">{record.business_id} • {record.department}</p>
+                        <div className="flex items-center gap-3">
+                           <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0 border border-primary/20">
+                             {record.name?.charAt(0) || 'U'}
+                           </div>
+                           <div>
+                             <p className="font-medium text-foreground">{record.name}</p>
+                             <p className="text-xs text-muted-foreground">{record.business_id} • {record.department}</p>
+                           </div>
+                        </div>
                       </td>
-                      <td className="p-4 align-middle">{record.pay_period}</td>
-                      <td className="p-4 align-middle text-right">₹{Number(record.base_salary).toLocaleString('en-IN')}</td>
-                      <td className="p-4 align-middle text-right text-green-600">+₹{Number(record.allowances).toLocaleString('en-IN')}</td>
-                      <td className="p-4 align-middle text-right text-red-600">-₹{Number(record.deductions).toLocaleString('en-IN')}</td>
-                      <td className="p-4 align-middle text-right font-bold">₹{Number(record.net_salary).toLocaleString('en-IN')}</td>
+                      <td className="p-4 align-middle text-foreground/80">{record.pay_period}</td>
+                      <td className="p-4 align-middle text-right text-foreground/80">₹{Number(record.base_salary).toLocaleString('en-IN')}</td>
+                      <td className="p-4 align-middle text-right text-[hsl(152,45%,38%)] font-medium">+₹{Number(record.allowances).toLocaleString('en-IN')}</td>
+                      <td className="p-4 align-middle text-right text-destructive font-medium">-₹{Number(record.deductions).toLocaleString('en-IN')}</td>
+                      <td className="p-4 align-middle text-right font-bold text-foreground">₹{Number(record.net_salary).toLocaleString('en-IN')}</td>
                     </tr>
                   )) : (
                     <tr>
-                      <td colSpan={6} className="h-24 text-center text-muted-foreground">
+                      <td colSpan={6} className="h-24 text-center text-muted-foreground bg-card">
                         No results found.
                       </td>
                     </tr>

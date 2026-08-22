@@ -68,13 +68,13 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-        <h1 className="text-3xl font-bold tracking-tight">Welcome back, {user?.name?.split(' ')[0]}</h1>
+        <h1 className="text-3xl font-display font-bold tracking-tight">Welcome back, {user?.name?.split(' ')[0]}</h1>
         <p className="text-muted-foreground mt-2">Here&apos;s an overview of your work day.</p>
       </motion.div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }}>
-          <Card className="h-full border-border/50 shadow-sm relative overflow-hidden">
+          <Card className="h-full border-border shadow-sm relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Today&apos;s Attendance</CardTitle>
@@ -112,7 +112,7 @@ export default function DashboardPage() {
                     </div>
                   )}
                   {!attendance.check_out && (
-                    <Button onClick={handleCheckOut} variant="secondary" className="w-full font-medium" disabled={checkingOut}>
+                    <Button onClick={handleCheckOut} className="w-full font-medium shadow-sm bg-secondary text-secondary-foreground hover:bg-secondary/80" disabled={checkingOut}>
                       {checkingOut ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                       Check Out
                     </Button>
@@ -130,7 +130,7 @@ export default function DashboardPage() {
                       {error}
                     </div>
                   )}
-                  <Button onClick={handleCheckIn} className="w-full font-medium shadow-sm" disabled={checkingIn}>
+                  <Button onClick={handleCheckIn} className="w-full font-medium shadow-sm bg-primary text-primary-foreground hover:bg-primary/90" disabled={checkingIn}>
                     {checkingIn ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                     Check In Now
                   </Button>
@@ -141,7 +141,8 @@ export default function DashboardPage() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.2 }}>
-          <Card className="h-full border-border/50 shadow-sm">
+          <Card className="h-full border-border shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-accent" />
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Leave Balance</CardTitle>
               <Calendar className="w-4 h-4 text-muted-foreground" />
@@ -154,7 +155,8 @@ export default function DashboardPage() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.3 }}>
-          <Card className="h-full border-border/50 shadow-sm">
+          <Card className="h-full border-border shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-success" />
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Next Holiday</CardTitle>
               <CheckCircle2 className="w-4 h-4 text-muted-foreground" />
