@@ -78,6 +78,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/login');
   };
 
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      removeToken();
+      setUser(null);
+      if (pathname !== '/login') {
+        router.push('/login');
+      }
+    };
+
+    window.addEventListener('dayflow:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('dayflow:unauthorized', handleUnauthorized);
+  }, [pathname, router]);
+
   return (
     <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}

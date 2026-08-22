@@ -24,21 +24,29 @@ export default function HrDashboardPage() {
       .finally(() => setLoading(false));
   };
 
+  const [processing, setProcessing] = useState<number[]>([]);
+
   const handleApprove = async (id: number) => {
+    setProcessing(p => [...p, id]);
     try {
       await fetchApi(`/leave/${id}/approve`, { method: "POST" });
       fetchLeaveRequests();
     } catch (e: any) {
       alert(e.message || "Failed to approve");
+    } finally {
+      setProcessing(p => p.filter(pid => pid !== id));
     }
   };
 
   const handleReject = async (id: number) => {
+    setProcessing(p => [...p, id]);
     try {
       await fetchApi(`/leave/${id}/reject`, { method: "POST" });
       fetchLeaveRequests();
     } catch (e: any) {
       alert(e.message || "Failed to reject");
+    } finally {
+      setProcessing(p => p.filter(pid => pid !== id));
     }
   };
 
@@ -75,11 +83,11 @@ export default function HrDashboardPage() {
                     <p className="text-sm mt-2">"{req.reason}"</p>
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive/10" onClick={() => handleReject(req.id)}>
-                      <X className="w-4 h-4 mr-1" /> Reject
+                    <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive/10" disabled={processing.includes(req.id)} onClick={() => handleReject(req.id)}>
+                      {processing.includes(req.id) ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <X className="w-4 h-4 mr-1" />} Reject
                     </Button>
-                    <Button size="sm" onClick={() => handleApprove(req.id)}>
-                      <Check className="w-4 h-4 mr-1" /> Approve
+                    <Button size="sm" disabled={processing.includes(req.id)} onClick={() => handleApprove(req.id)}>
+                      {processing.includes(req.id) ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Check className="w-4 h-4 mr-1" />} Approve
                     </Button>
                   </div>
                 </div>
