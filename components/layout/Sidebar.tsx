@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { LayoutDashboard, Calendar, Clock, LogOut, Users, DollarSign, Menu, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useState, useEffect } from "react";
+import { NotificationsPopover } from "@/components/NotificationsPopover";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -17,8 +18,9 @@ export function Sidebar() {
   const routes = isHr ? [
     { href: "/hr", label: "Dashboard", icon: LayoutDashboard },
     { href: "/hr/employees", label: "Employees", icon: Users },
-    { href: "/hr/leave", label: "Leave Requests", icon: Calendar },
     { href: "/hr/payroll", label: "Payroll", icon: DollarSign },
+    { href: "/hr/reports/attendance", label: "Attendance Report", icon: Clock },
+    { href: "/hr/reports/leave", label: "Leave Report", icon: Calendar },
   ] : [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard/profile", label: "My Profile", icon: Users },
@@ -60,16 +62,20 @@ export function Sidebar() {
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-card border-b flex items-center justify-between px-4 z-40">
         <div className="flex items-center gap-2">
+          <img src="/logo.jpeg" alt="Dayflow Logo" className="h-8 w-auto rounded-sm" />
           <h2 className="font-bold text-xl tracking-tight text-primary">Dayflow</h2>
         </div>
-        <button
-          onClick={() => setIsOpen(true)}
-          className="p-2 -mr-2 text-muted-foreground hover:text-foreground rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Open navigation menu"
-          aria-expanded={isOpen}
-        >
-          <Menu className="w-6 h-6" />
-        </button>
+        <div className="flex items-center gap-2">
+          <NotificationsPopover />
+          <button
+            onClick={() => setIsOpen(true)}
+            className="p-2 -mr-2 text-muted-foreground hover:text-foreground rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Open navigation menu"
+            aria-expanded={isOpen}
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        </div>
       </div>
 
       {/* Backdrop */}
@@ -84,18 +90,21 @@ export function Sidebar() {
       {/* Sidebar Content */}
       <aside
         className={cn(
-          "w-64 border-r bg-card flex flex-col h-screen fixed inset-y-0 left-0 z-50 transform transition-transform duration-200 ease-in-out md:translate-x-0",
+          "w-64 border-r border-[hsl(20,30%,30%)] bg-[hsl(20,33%,22%)] text-[hsl(39,40%,90%)] flex flex-col h-screen fixed inset-y-0 left-0 z-50 transform transition-transform duration-200 ease-in-out md:translate-x-0",
           isOpen ? "translate-x-0 shadow-xl" : "-translate-x-full"
         )}
       >
-        <div className="p-6 border-b flex items-center justify-between">
-          <div>
-            <h2 className="font-bold text-xl tracking-tight text-primary">Dayflow</h2>
-            <p className="text-xs text-muted-foreground mt-1">HR Management System</p>
+        <div className="p-6 border-b border-[hsl(20,30%,30%)] flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src="/logo.jpeg" alt="Dayflow Logo" className="h-10 w-auto rounded-md" />
+            <div>
+              <h2 className="font-display text-2xl font-bold tracking-tight text-[hsl(36,60%,97%)]">Dayflow</h2>
+              <p className="text-xs text-[hsl(39,25%,55%)] mt-1">HR Management System</p>
+            </div>
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="md:hidden p-2 -mr-3 text-muted-foreground hover:text-foreground rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="md:hidden p-2 -mr-3 text-[hsl(39,30%,70%)] hover:text-[hsl(39,40%,90%)] rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Close navigation menu"
           >
             <X className="w-5 h-5" />
@@ -114,8 +123,8 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    ? "bg-[hsl(24,55%,44%)] text-white"
+                    : "text-[hsl(39,30%,70%)] hover:bg-[hsl(20,33%,28%)] hover:text-[hsl(39,40%,90%)]"
                 )}
                 aria-current={isActive ? "page" : undefined}
               >
@@ -126,20 +135,21 @@ export function Sidebar() {
           })}
         </div>
 
-        <div className="p-4 border-t">
+        <div className="p-4 border-t border-[hsl(20,30%,30%)]">
           <div className="flex items-center gap-3 px-3 py-2 mb-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+            <div className="w-8 h-8 rounded-full bg-[hsl(24,55%,44%)] text-white flex items-center justify-center font-bold text-xs shrink-0">
               {user?.name?.charAt(0) || 'U'}
             </div>
-            <div className="flex flex-col min-w-0">
+            <div className="flex flex-col min-w-0 flex-1">
               <span className="text-sm font-medium leading-none truncate">{user?.name}</span>
-              <span className="text-xs text-muted-foreground mt-1 capitalize">{user?.role}</span>
+              <span className="text-xs text-[hsl(39,30%,70%)] mt-1 capitalize">{user?.role}</span>
             </div>
+            <NotificationsPopover />
           </div>
 
           <button
             onClick={logout}
-            className="flex w-full items-center gap-3 px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex w-full items-center gap-3 px-3 py-2 text-sm font-medium text-[hsl(39,30%,65%)] hover:bg-[hsl(4,65%,35%)] hover:text-white rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Sign out"
           >
             <LogOut className="w-4 h-4" />

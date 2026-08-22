@@ -48,8 +48,9 @@ export default function HrEmployeeProfile() {
         setSalary(data.employee.salary ? data.employee.salary.toString() : "0");
         setPhone(data.employee.phone || "");
         setAddress(data.employee.address || "");
-      } catch (err: any) {
-        setError(err.message || "Failed to load employee details");
+      } catch (err: unknown) {
+        const error = err as Error;
+        setError(error.message || "Failed to load employee details");
       } finally {
         setLoading(false);
       }
@@ -90,8 +91,9 @@ export default function HrEmployeeProfile() {
           address
         });
       }
-    } catch (err: any) {
-      setError(err.message || "Failed to update profile");
+    } catch (err: unknown) {
+      const error = err as Error;
+      setError(error.message || "Failed to update profile");
     } finally {
       setSaving(false);
     }
@@ -117,7 +119,7 @@ export default function HrEmployeeProfile() {
     return (
       <div className="p-8 text-center">
         <div className="text-destructive font-medium mb-4">{error}</div>
-        <Button variant="outline" onClick={() => router.push("/hr/employees")}>
+        <Button variant="outline" onClick={() => router.push("/hr/employees")} className="border-border hover:bg-secondary/50 text-foreground">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Directory
         </Button>
@@ -130,40 +132,45 @@ export default function HrEmployeeProfile() {
   return (
     <div className="max-w-3xl space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => router.push("/hr/employees")}>
+        <Button variant="ghost" size="icon" onClick={() => router.push("/hr/employees")} className="hover:bg-secondary/50 text-foreground">
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{employee.name}</h1>
-          <p className="text-muted-foreground mt-1">{employee.employee_id} • {employee.email}</p>
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-display text-xl font-bold border border-primary/20">
+            {employee.name?.charAt(0) || 'U'}
+          </div>
+          <div>
+            <h1 className="text-3xl font-display font-bold tracking-tight text-foreground">{employee.name}</h1>
+            <p className="text-muted-foreground mt-1 text-sm font-medium">{employee.employee_id} • {employee.email}</p>
+          </div>
         </div>
       </div>
 
       {error && (
-        <div className="p-4 bg-destructive/10 text-destructive border border-destructive/20 rounded-md text-sm">
+        <div className="p-4 bg-destructive/10 text-destructive border border-destructive/20 rounded-md text-sm font-medium">
           {error}
         </div>
       )}
       
       {success && (
-        <div className="p-4 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md text-sm">
+        <div className="p-4 bg-[hsl(152,35%,90%)] text-[hsl(152,45%,38%)] border border-[hsl(152,45%,38%)]/20 rounded-md text-sm font-medium">
           {success}
         </div>
       )}
 
-      <div className="bg-card border rounded-lg shadow-sm divide-y divide-border">
+      <div className="bg-card border border-border rounded-lg warm-shadow-md divide-y divide-border overflow-hidden">
         {/* Profile Info Section (Read Only) */}
-        <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Account Information</h3>
+        <div className="p-6 bg-secondary/10">
+          <h3 className="text-lg font-display font-semibold mb-4 text-foreground">Account Information</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <div className="text-sm font-medium text-muted-foreground">Employee ID</div>
-              <div className="mt-1 font-mono">{employee.employee_id}</div>
+              <div className="mt-1 font-mono text-foreground/80">{employee.employee_id}</div>
             </div>
             <div>
               <div className="text-sm font-medium text-muted-foreground">Role</div>
               <div className="mt-1">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${employee.role === 'hr' ? 'bg-purple-100 text-purple-700 border border-purple-200' : 'bg-blue-100 text-blue-700 border border-blue-200'}`}>
+                <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${employee.role === 'hr' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-secondary text-secondary-foreground border-border'}`}>
                   {employee.role.toUpperCase()}
                 </span>
               </div>
@@ -173,36 +180,39 @@ export default function HrEmployeeProfile() {
 
         {/* Organizational Info Section (Editable) */}
         <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Organizational Information</h3>
+          <h3 className="text-lg font-display font-semibold mb-4 text-foreground">Organizational Information</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Department</label>
+              <label className="text-sm font-medium text-foreground">Department</label>
               <Input 
                 value={department} 
                 onChange={(e) => setDepartment(e.target.value)} 
                 placeholder="e.g. Engineering"
+                className="bg-card border-border focus-visible:ring-primary/20"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Designation</label>
+              <label className="text-sm font-medium text-foreground">Designation</label>
               <Input 
                 value={designation} 
                 onChange={(e) => setDesignation(e.target.value)} 
                 placeholder="e.g. Software Engineer"
+                className="bg-card border-border focus-visible:ring-primary/20"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Salary (INR)</label>
+              <label className="text-sm font-medium text-foreground">Salary (INR)</label>
               <Input 
                 type="number"
                 value={salary} 
                 onChange={(e) => setSalary(e.target.value)} 
                 placeholder="0"
                 min="0"
+                className="bg-card border-border focus-visible:ring-primary/20 font-mono"
               />
               {employee.salary > 0 && (
                 <div className="text-xs text-muted-foreground mt-1">
-                  Current: {formatINR(employee.salary)}
+                  Current: <span className="font-medium text-foreground/80">{formatINR(employee.salary)}</span>
                 </div>
               )}
             </div>
@@ -211,29 +221,31 @@ export default function HrEmployeeProfile() {
 
         {/* Contact Info Section (Editable) */}
         <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
+          <h3 className="text-lg font-display font-semibold mb-4 text-foreground">Contact Information</h3>
           <div className="grid grid-cols-1 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Phone Number</label>
+              <label className="text-sm font-medium text-foreground">Phone Number</label>
               <Input 
                 value={phone} 
                 onChange={(e) => setPhone(e.target.value)} 
                 placeholder="+91..."
+                className="bg-card border-border focus-visible:ring-primary/20"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Address</label>
+              <label className="text-sm font-medium text-foreground">Address</label>
               <Input 
                 value={address} 
                 onChange={(e) => setAddress(e.target.value)} 
                 placeholder="Full address"
+                className="bg-card border-border focus-visible:ring-primary/20"
               />
             </div>
           </div>
         </div>
 
-        <div className="p-6 flex justify-end">
-          <Button onClick={handleSave} disabled={saving} className="min-w-[120px]">
+        <div className="p-6 flex justify-end bg-secondary/10">
+          <Button onClick={handleSave} disabled={saving} className="min-w-[120px] bg-primary text-primary-foreground hover:bg-primary/90">
             {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
             Save Changes
           </Button>

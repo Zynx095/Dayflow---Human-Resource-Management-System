@@ -37,12 +37,12 @@ export default function AttendancePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Attendance History</h1>
+        <h1 className="text-3xl font-display font-bold tracking-tight">Attendance History</h1>
         <p className="text-muted-foreground mt-2">View your recent check-ins and working hours.</p>
       </div>
 
-      <Card className="border-border/50 shadow-sm overflow-hidden">
-        <CardHeader className="bg-muted/10 border-b">
+      <Card className="border-border shadow-sm overflow-hidden">
+        <CardHeader className="bg-secondary/20 border-b border-border">
           <CardTitle>Recent Records</CardTitle>
           <CardDescription>Your check-ins for the past 7 days.</CardDescription>
         </CardHeader>
@@ -67,8 +67,8 @@ export default function AttendancePage() {
           ) : (
             <div className="relative w-full overflow-auto">
               <table className="w-full caption-bottom text-sm">
-                <thead className="[&_tr]:border-b bg-muted/50">
-                  <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <thead className="[&_tr]:border-b border-border bg-secondary/50">
+                  <tr className="border-b border-border transition-colors hover:bg-secondary/50 data-[state=selected]:bg-secondary/50">
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Date</th>
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Check In</th>
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Check Out</th>
@@ -78,7 +78,7 @@ export default function AttendancePage() {
                 </thead>
                 <tbody className="[&_tr:last-child]:border-0">
                   {records.map((record) => (
-                    <tr key={record.id || record.check_in} className="border-b transition-colors hover:bg-muted/20">
+                    <tr key={record.id || record.check_in} className="border-b border-border transition-colors hover:bg-secondary/50">
                       <td className="p-6 align-middle font-medium">
                         {new Date(record.check_in).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </td>
@@ -93,7 +93,9 @@ export default function AttendancePage() {
                       </td>
                       <td className="p-4 align-middle">
                         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                          record.status === 'present' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                          record.status === 'present'
+                            ? 'bg-[hsl(152,35%,90%)] text-[hsl(152,45%,30%)]'
+                            : 'bg-[hsl(4,50%,93%)] text-[hsl(4,65%,40%)]'
                         }`}>
                           {record.status || 'present'}
                         </span>

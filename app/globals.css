@@ -4,35 +4,44 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Dayflow Warm Creme + Wood Design System */
+    --background: 39 33% 98%;
+    --foreground: 20 45% 14%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 36 60% 97%;
+    --card-foreground: 20 45% 14%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 36 60% 97%;
+    --popover-foreground: 20 45% 14%;
 
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 20 33% 28%;
+    --primary-foreground: 39 40% 96%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 33 40% 90%;
+    --secondary-foreground: 20 45% 14%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 35 30% 93%;
+    --muted-foreground: 20 15% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 24 55% 44%;
+    --accent-foreground: 39 40% 96%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 4 65% 47%;
+    --destructive-foreground: 39 40% 96%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --border: 30 25% 88%;
+    --input: 30 25% 85%;
+    --ring: 20 33% 28%;
 
-    --radius: 0.5rem;
+    --radius: 0.625rem;
+
+    /* Extended palette for direct use */
+    --success: 152 45% 38%;
+    --success-foreground: 39 40% 96%;
+    --warning: 38 90% 50%;
+    --warning-foreground: 20 45% 14%;
+    --info: 210 90% 45%;
+    --info-foreground: 210 100% 98%;
   }
 }
 
@@ -41,6 +50,25 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-playfair), Georgia, 'Times New Roman', serif;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .warm-shadow {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  }
+  .warm-shadow-md {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  }
+  .warm-shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
   }
 }

@@ -3,6 +3,7 @@
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useAuth } from "@/lib/auth";
 import { Loader2 } from "lucide-react";
+import GlobalClickSpark from '@/components/GlobalClickSpark';
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -25,7 +26,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="min-h-screen bg-muted/20 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-background flex flex-col md:flex-row">
+      <GlobalClickSpark />
       <Sidebar />
       <main className="flex-1 md:pl-64 min-h-screen pt-16 md:pt-0">
         <div className="p-4 md:p-8 max-w-6xl mx-auto">

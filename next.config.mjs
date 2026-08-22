@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['gsap', '@gsap/react'],
   // If you had rewrites for your Express backend, they go inside here
   async rewrites() {
     return [

@@ -15,6 +15,14 @@ interface PayrollRecord {
   created_at: string;
 }
 
+function formatINR(value: number) {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 2
+  }).format(value);
+}
+
 export default function PayrollPage() {
   const [records, setRecords] = useState<PayrollRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,11 +47,11 @@ export default function PayrollPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">My Payroll</h1>
+        <h1 className="text-3xl font-display font-bold tracking-tight">My Payroll</h1>
         <p className="text-muted-foreground mt-2">View your salary and payment history.</p>
       </div>
 
-      <Card>
+      <Card className="border-border">
         <CardHeader>
           <CardTitle>Payslips</CardTitle>
           <CardDescription>Your recent salary information.</CardDescription>
@@ -63,13 +71,13 @@ export default function PayrollPage() {
               </div>
             </div>
           ) : records.length === 0 ? (
-            <div className="text-center p-8 text-muted-foreground border-2 border-dashed rounded-lg">
+            <div className="text-center p-8 text-muted-foreground border-2 border-dashed border-border/50 rounded-lg">
               No payroll records found.
             </div>
           ) : (
             <div className="space-y-4">
               {records.map(record => (
-                <div key={record.id} className="flex flex-col md:flex-row justify-between items-start md:items-center p-4 border rounded-lg bg-card gap-4">
+                <div key={record.id} className="flex flex-col md:flex-row justify-between items-start md:items-center p-4 border border-border rounded-lg bg-card gap-4 hover:bg-secondary/50 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
                       <DollarSign className="w-5 h-5" />
@@ -82,19 +90,19 @@ export default function PayrollPage() {
                   <div className="w-full md:w-auto grid grid-cols-2 md:flex gap-4 md:gap-8 text-sm">
                     <div>
                       <p className="text-muted-foreground">Base Salary</p>
-                      <p className="font-medium">₹{Number(record.base_salary).toLocaleString('en-IN')}</p>
+                      <p className="font-medium">{formatINR(Number(record.base_salary))}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Allowances</p>
-                      <p className="font-medium text-green-600">+₹{Number(record.allowances).toLocaleString('en-IN')}</p>
+                      <p className="font-medium text-[hsl(var(--success))]">+{formatINR(Number(record.allowances))}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Deductions</p>
-                      <p className="font-medium text-red-600">-₹{Number(record.deductions).toLocaleString('en-IN')}</p>
+                      <p className="font-medium text-[hsl(var(--danger))]">-{formatINR(Number(record.deductions))}</p>
                     </div>
-                    <div className="border-t md:border-l md:border-t-0 pt-2 md:pt-0 md:pl-8 text-right">
+                    <div className="border-t border-border md:border-l md:border-t-0 pt-2 md:pt-0 md:pl-8 text-right">
                       <p className="text-muted-foreground">Net Pay</p>
-                      <p className="font-bold text-lg">₹{Number(record.net_salary).toLocaleString('en-IN')}</p>
+                      <p className="font-bold text-lg text-[hsl(var(--primary))]">{formatINR(Number(record.net_salary))}</p>
                     </div>
                   </div>
                 </div>

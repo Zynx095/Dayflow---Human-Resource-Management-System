@@ -8,6 +8,8 @@ import leaveRoutes from './routes/leave.js';
 import payrollRoutes from './routes/payroll.js';
 import analyticsRoutes from './routes/analytics.js';
 import employeesRoutes from './routes/employees.js';
+import notificationsRoutes from './routes/notifications.js';
+import reportsRoutes from './routes/reports.js';
 
 dotenv.config();
 
@@ -30,6 +32,8 @@ app.use('/api/leave', leaveRoutes);
 app.use('/api/payroll', payrollRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/employees', employeesRoutes);
+app.use('/api/notifications', notificationsRoutes);
+app.use('/api/reports', reportsRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {

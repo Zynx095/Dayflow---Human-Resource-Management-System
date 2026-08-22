@@ -35,6 +35,16 @@ router.post('/', authenticateToken, requireRole('employee'), async (req, res) =>
       [employee_id, leave_type, start_date, end_date, reason, 'PENDING', nowStr, nowStr]
     );
 
+    // Notify HR
+    const hrUsers = await db.all("SELECT id FROM users WHERE role = 'hr'");
+    const employee = await db.get("SELECT name FROM employees WHERE id = $1", [employee_id]);
+    for (const hr of hrUsers) {
+      await db.run(
+        `INSERT INTO notifications (user_id, type, title, message) VALUES ($1, $2, $3, $4)`,
+        [hr.id, 'LEAVE_REQUEST', 'New Leave Request', `${employee.name} submitted a ${leave_type} leave request.`]
+      );
+    }
+
     res.json({ message: 'Leave request created', id: result.lastID });
   } catch (err) {
     console.error(err);
@@ -120,6 +130,15 @@ router.post('/:id/approve', authenticateToken, requireRole('hr'), async (req, re
       ['APPROVED', admin_comment || null, nowStr, id]
     );
     
+    // Notify Employee
+    const employee = await db.get("SELECT user_id FROM employees WHERE id = $1", [record.employee_id]);
+    if (employee && employee.user_id) {
+      await db.run(
+        `INSERT INTO notifications (user_id, type, title, message) VALUES ($1, $2, $3, $4)`,
+        [employee.user_id, 'LEAVE_APPROVED', 'Leave Approved', `Your leave request for ${record.start_date} has been approved.`]
+      );
+    }
+
     res.json({ message: 'Leave request approved' });
   } catch (err) {
     console.error(err);
@@ -147,6 +166,15 @@ router.post('/:id/reject', authenticateToken, requireRole('hr'), async (req, res
       ['REJECTED', admin_comment || null, nowStr, id]
     );
     
+    // Notify Employee
+    const employee = await db.get("SELECT user_id FROM employees WHERE id = $1", [record.employee_id]);
+    if (employee && employee.user_id) {
+      await db.run(
+        `INSERT INTO notifications (user_id, type, title, message) VALUES ($1, $2, $3, $4)`,
+        [employee.user_id, 'LEAVE_REJECTED', 'Leave Rejected', `Your leave request for ${record.start_date} has been rejected.`]
+      );
+    }
+
     res.json({ message: 'Leave request rejected' });
   } catch (err) {
     console.error(err);
