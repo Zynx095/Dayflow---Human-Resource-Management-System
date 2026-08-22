@@ -61,6 +61,19 @@ export async function initDb() {
        VALUES (?, ?, ?, ?, ?, ?)`,
       ['EMP-001', empRes.lastID, 'John Doe', 'john@dayflow.com', 'Engineering', 'employee']
     );
+
+    // Create Payroll records
+    await db.run(
+      `INSERT INTO payroll (employee_id, pay_period, base_salary, allowances, deductions, net_salary)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [1, '2026-08', 6000, 500, 200, 6300]
+    );
+
+    await db.run(
+      `INSERT INTO payroll (employee_id, pay_period, base_salary, allowances, deductions, net_salary)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [2, '2026-08', 5000, 300, 100, 5200]
+    );
     console.log('Seed complete.');
   }
 }

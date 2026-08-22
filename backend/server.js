@@ -5,6 +5,7 @@ import { initDb } from './db/index.js';
 import authRoutes from './routes/auth.js';
 import attendanceRoutes from './routes/attendance.js';
 import leaveRoutes from './routes/leave.js';
+import payrollRoutes from './routes/payroll.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ initDb().catch(err => {
 app.use('/api/auth', authRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/leave', leaveRoutes);
+app.use('/api/payroll', payrollRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {

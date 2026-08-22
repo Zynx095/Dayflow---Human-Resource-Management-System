@@ -84,3 +84,25 @@ HR rejects a pending leave request.
 - **Request Body (Optional):** { "admin_comment": "string" }
 - **Response (200):** { "message": "Leave request rejected" }
 - **Response (400):** Cannot reject if status is not PENDING.
+
+## Payroll / Salary Visibility (/api/payroll)
+
+### GET /payroll/me
+Employee retrieves their own payroll records.
+- **Headers:** Authorization: Bearer <token> (requires employee role)
+- **Response (200):** { "records": [ { "id": 1, "pay_period": "2026-08", "base_salary": 5000, "allowances": 300, "deductions": 100, "net_salary": 5200, "created_at": "...", "updated_at": "..." } ] }
+- **Response (401):** Unauthorized.
+- **Response (403):** Forbidden (wrong role).
+
+### GET /payroll/all
+HR retrieves payroll records for all employees.
+- **Headers:** Authorization: Bearer <token> (requires hr role)
+- **Response (200):** { "records": [ { "id": 1, "pay_period": "2026-08", "base_salary": 6000, "allowances": 500, "deductions": 200, "net_salary": 6300, "employee_id": 1, "business_id": "EMP-000", "name": "HR Admin", "department": "Human Resources" } ] }
+
+### GET /payroll/:employeeId
+HR retrieves payroll records for a specific employee.
+- **Headers:** Authorization: Bearer <token> (requires hr role)
+- **Path Parameters:** employeeId (integer database ID)
+- **Response (200):** { "records": [ ... ] }
+- **Response (400):** Invalid employee ID format.
+- **Response (404):** Employee not found.

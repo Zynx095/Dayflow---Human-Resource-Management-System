@@ -50,3 +50,16 @@ CREATE TABLE IF NOT EXISTS leave_requests (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS payroll (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    employee_id INTEGER NOT NULL,
+    pay_period TEXT NOT NULL,
+    base_salary REAL NOT NULL,
+    allowances REAL DEFAULT 0,
+    deductions REAL DEFAULT 0,
+    net_salary REAL NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE
+);
