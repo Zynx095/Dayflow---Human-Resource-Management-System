@@ -7,16 +7,26 @@ import { Input } from "@/components/ui/input";
 import { fetchApi } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 
+interface LeaveRequest {
+  id: number;
+  leave_type: string;
+  start_date: string;
+  end_date: string;
+  reason: string;
+  status: string;
+}
+
 export default function LeavePage() {
   const [leaveType, setLeaveType] = useState("PAID");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [reason, setReason] = useState("");
   
-  const [requests, setRequests] = useState<any[]>([]);
+  const [requests, setRequests] = useState<LeaveRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const fetchMyLeaves = () => {
     setLoading(true);
@@ -33,6 +43,7 @@ export default function LeavePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess(false);
     setSubmitting(true);
     
     try {
@@ -49,9 +60,11 @@ export default function LeavePage() {
       setStartDate("");
       setEndDate("");
       setReason("");
+      setSuccess(true);
       fetchMyLeaves();
-      alert("Leave request submitted!");
-    } catch (err: any) {
+      setTimeout(() => setSuccess(false), 5000);
+    } catch (e: unknown) {
+      const err = e as Error;
       setError(err.message || "Failed to submit request");
     } finally {
       setSubmitting(false);
@@ -66,7 +79,7 @@ export default function LeavePage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+        <Card className="border-border/50 shadow-sm">
           <CardHeader>
             <CardTitle>Request Leave</CardTitle>
             <CardDescription>Submit a new leave request for approval.</CardDescription>
@@ -76,6 +89,11 @@ export default function LeavePage() {
               {error && (
                 <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md border border-destructive/20">
                   {error}
+                </div>
+              )}
+              {success && (
+                <div className="p-3 text-sm text-green-800 bg-green-100 rounded-md border border-green-200">
+                  Leave request submitted successfully!
                 </div>
               )}
               
@@ -116,7 +134,7 @@ export default function LeavePage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/50 shadow-sm">
           <CardHeader>
             <CardTitle>Leave History</CardTitle>
             <CardDescription>Your past and pending requests.</CardDescription>
@@ -131,19 +149,19 @@ export default function LeavePage() {
                 No leave requests found.
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
                 {requests.map(req => (
-                  <div key={req.id} className="flex justify-between items-center p-3 border rounded-lg">
+                  <div key={req.id} className="flex justify-between items-center p-3 border rounded-lg hover:bg-muted/30 transition-colors">
                     <div>
-                      <p className="font-medium text-sm">{req.leave_type}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(req.start_date).toLocaleDateString()} - {new Date(req.end_date).toLocaleDateString()}
+                      <p className="font-medium text-sm text-foreground">{req.leave_type}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {new Date(req.start_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} - {new Date(req.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </p>
                     </div>
-                    <div className={`text-xs px-2 py-1 rounded-full font-medium ${
-                      req.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
-                      req.status === 'REJECTED' ? 'bg-red-100 text-red-700' :
-                      'bg-yellow-100 text-yellow-700'
+                    <div className={`text-xs px-2.5 py-1 rounded-full font-semibold ${
+                      req.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
+                      req.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                      'bg-yellow-100 text-yellow-800'
                     }`}>
                       {req.status}
                     </div>
