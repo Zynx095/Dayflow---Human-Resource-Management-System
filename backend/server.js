@@ -6,6 +6,8 @@ import authRoutes from './routes/auth.js';
 import attendanceRoutes from './routes/attendance.js';
 import leaveRoutes from './routes/leave.js';
 import payrollRoutes from './routes/payroll.js';
+import analyticsRoutes from './routes/analytics.js';
+import employeesRoutes from './routes/employees.js';
 
 dotenv.config();
 
@@ -26,6 +28,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/leave', leaveRoutes);
 app.use('/api/payroll', payrollRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/employees', employeesRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {

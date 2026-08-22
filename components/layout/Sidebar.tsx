@@ -21,6 +21,7 @@ export function Sidebar() {
     { href: "/hr/payroll", label: "Payroll", icon: DollarSign },
   ] : [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/dashboard/profile", label: "My Profile", icon: Users },
     { href: "/dashboard/attendance", label: "Attendance", icon: Clock },
     { href: "/dashboard/leave", label: "Leave", icon: Calendar },
     { href: "/dashboard/payroll", label: "Payroll", icon: DollarSign },
