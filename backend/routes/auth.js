@@ -75,4 +75,60 @@ router.get('/me', authenticateToken, async (req, res) => {
   }
 });
 
+async function generateLoginId(db, firstName, lastName) {
+  const companyInitials = "OI";
+  const nameInitials = `${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}`;
+  const year = new Date().getFullYear();
+  
+  const countRow = await db.get(`SELECT COUNT(*) as count FROM users WHERE strftime('%Y', created_at) = ?`, [year.toString()]);
+  const serial = (countRow.count + 1).toString().padStart(4, '0');
+  
+  return `${companyInitials}${nameInitials}${year}${serial}`;
+}
+
+const signupSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  role: z.string().optional()
+});
+
+router.post('/signup', async (req, res) => {
+  try {
+    const parsed = signupSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: 'Invalid input', details: parsed.error.issues });
+    }
+
+    const { email, password, firstName, lastName, role } = parsed.data;
+    const db = await getDb();
+
+    const existing = await db.get('SELECT id FROM users WHERE email = ?', [email]);
+    if (existing) {
+      return res.status(400).json({ error: 'User already exists' });
+    }
+
+    const password_hash = await bcrypt.hash(password, 10);
+    const login_id = await generateLoginId(db, firstName, lastName);
+    const userRole = role || 'employee';
+
+    const result = await db.run(
+      'INSERT INTO users (email, password_hash, role, login_id) VALUES (?, ?, ?, ?)',
+      [email, password_hash, userRole, login_id]
+    );
+
+    const name = `${firstName} ${lastName}`;
+    await db.run(
+      'INSERT INTO employees (employee_id, user_id, name, email, role, login_id) VALUES (?, ?, ?, ?, ?, ?)',
+      [login_id, result.lastID, name, email, userRole, login_id]
+    );
+
+    res.status(201).json({ message: 'User created successfully', login_id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 export default router;

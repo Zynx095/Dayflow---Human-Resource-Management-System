@@ -130,14 +130,21 @@ export default function HrDashboardPage() {
         </Card>
       </div>
 
-      {!analyticsLoading && analytics?.ai_insight && (
-        <div className="rounded-lg bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 p-4">
-          <div className="flex items-start gap-3">
-            <Sparkles className="h-5 w-5 text-primary mt-0.5" />
+      <Card className="border-border/50 shadow-sm overflow-hidden">
+        <CardHeader className="bg-muted/10 border-b pb-4">
+          <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-primary">Dayflow Smart Insights</h3>
-              <p className="text-sm text-muted-foreground mt-1">{analytics.ai_insight}</p>
+              <CardTitle className="flex items-center gap-2">
+                <CalendarIcon className="w-5 h-5 text-primary" />
+                Pending Leave Requests
+              </CardTitle>
+              <CardDescription className="mt-1.5">Review and approve or reject employee leave.</CardDescription>
             </div>
+            {!loading && !error && (
+              <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                {pendingRequests.length} pending
+              </div>
+            )}
           </div>
         </div>
       )}
