@@ -28,8 +28,9 @@ export default function HrEmployeeDirectory() {
       try {
         const data = await fetchApi("/employees");
         setEmployees(data.employees || []);
-      } catch (err: any) {
-        setError(err.message || "Failed to load employees");
+      } catch (err: unknown) {
+        const error = err as Error;
+        setError(error.message || "Failed to load employees");
       } finally {
         setLoading(false);
       }

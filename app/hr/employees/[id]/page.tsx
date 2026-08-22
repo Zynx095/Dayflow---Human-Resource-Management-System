@@ -48,8 +48,9 @@ export default function HrEmployeeProfile() {
         setSalary(data.employee.salary ? data.employee.salary.toString() : "0");
         setPhone(data.employee.phone || "");
         setAddress(data.employee.address || "");
-      } catch (err: any) {
-        setError(err.message || "Failed to load employee details");
+      } catch (err: unknown) {
+        const error = err as Error;
+        setError(error.message || "Failed to load employee details");
       } finally {
         setLoading(false);
       }
@@ -90,8 +91,9 @@ export default function HrEmployeeProfile() {
           address
         });
       }
-    } catch (err: any) {
-      setError(err.message || "Failed to update profile");
+    } catch (err: unknown) {
+      const error = err as Error;
+      setError(error.message || "Failed to update profile");
     } finally {
       setSaving(false);
     }

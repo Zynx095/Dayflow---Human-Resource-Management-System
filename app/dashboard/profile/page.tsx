@@ -42,8 +42,9 @@ export default function EmployeeProfile() {
           setPhone(data.employee.phone || "");
           setAddress(data.employee.address || "");
         }
-      } catch (err: any) {
-        setError(err.message || "Failed to load profile details");
+      } catch (err: unknown) {
+        const error = err as Error;
+        setError(error.message || "Failed to load profile details");
       } finally {
         setLoading(false);
       }
@@ -76,8 +77,9 @@ export default function EmployeeProfile() {
         phone,
         address
       });
-    } catch (err: any) {
-      setError(err.message || "Failed to update profile");
+    } catch (err: unknown) {
+      const error = err as Error;
+      setError(error.message || "Failed to update profile");
     } finally {
       setSaving(false);
     }
