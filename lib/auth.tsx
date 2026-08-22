@@ -83,6 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       removeToken();
       setUser(null);
       if (pathname !== '/login') {
+        alert("Session Expired. Please log in again.");
         router.push('/login');
       }
     };
