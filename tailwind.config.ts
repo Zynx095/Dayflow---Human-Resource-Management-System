@@ -12,6 +12,8 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         border: "hsl(var(--border))",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
       },
     },
   },
