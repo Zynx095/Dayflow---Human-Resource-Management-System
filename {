@@ -1,1 +1,0 @@
-router.get(\"/hr\", authenticateToken, authorizeRole(\"hr\"), async (req, res) =  
