@@ -3,11 +3,24 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { fetchApi } from "@/lib/api";
-import { Loader2, Search, DollarSign } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
+interface PayrollRecord {
+  id: number;
+  pay_period: string;
+  base_salary: number;
+  allowances: number;
+  deductions: number;
+  net_salary: number;
+  employee_id: number;
+  business_id: string;
+  name: string;
+  department: string;
+}
+
 export default function HrPayrollPage() {
-  const [records, setRecords] = useState<any[]>([]);
+  const [records, setRecords] = useState<PayrollRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -77,10 +90,10 @@ export default function HrPayrollPage() {
                         <p className="text-xs text-muted-foreground">{record.business_id} • {record.department}</p>
                       </td>
                       <td className="p-4 align-middle">{record.pay_period}</td>
-                      <td className="p-4 align-middle text-right">${Number(record.base_salary).toLocaleString()}</td>
-                      <td className="p-4 align-middle text-right text-green-600">+${Number(record.allowances).toLocaleString()}</td>
-                      <td className="p-4 align-middle text-right text-red-600">-${Number(record.deductions).toLocaleString()}</td>
-                      <td className="p-4 align-middle text-right font-bold">${Number(record.net_salary).toLocaleString()}</td>
+                      <td className="p-4 align-middle text-right">₹{Number(record.base_salary).toLocaleString('en-IN')}</td>
+                      <td className="p-4 align-middle text-right text-green-600">+₹{Number(record.allowances).toLocaleString('en-IN')}</td>
+                      <td className="p-4 align-middle text-right text-red-600">-₹{Number(record.deductions).toLocaleString('en-IN')}</td>
+                      <td className="p-4 align-middle text-right font-bold">₹{Number(record.net_salary).toLocaleString('en-IN')}</td>
                     </tr>
                   )) : (
                     <tr>
