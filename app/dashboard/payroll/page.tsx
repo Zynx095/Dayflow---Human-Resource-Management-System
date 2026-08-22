@@ -5,8 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { fetchApi } from "@/lib/api";
 import { Loader2, DollarSign } from "lucide-react";
 
+interface PayrollRecord {
+  id: number;
+  pay_period: string;
+  base_salary: number;
+  allowances: number;
+  deductions: number;
+  net_salary: number;
+  created_at: string;
+}
+
 export default function PayrollPage() {
-  const [records, setRecords] = useState<any[]>([]);
+  const [records, setRecords] = useState<PayrollRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -53,19 +63,19 @@ export default function PayrollPage() {
                   <div className="w-full md:w-auto grid grid-cols-2 md:flex gap-4 md:gap-8 text-sm">
                     <div>
                       <p className="text-muted-foreground">Base Salary</p>
-                      <p className="font-medium">${Number(record.base_salary).toLocaleString()}</p>
+                      <p className="font-medium">₹{Number(record.base_salary).toLocaleString('en-IN')}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Allowances</p>
-                      <p className="font-medium text-green-600">+${Number(record.allowances).toLocaleString()}</p>
+                      <p className="font-medium text-green-600">+₹{Number(record.allowances).toLocaleString('en-IN')}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Deductions</p>
-                      <p className="font-medium text-red-600">-${Number(record.deductions).toLocaleString()}</p>
+                      <p className="font-medium text-red-600">-₹{Number(record.deductions).toLocaleString('en-IN')}</p>
                     </div>
                     <div className="border-t md:border-l md:border-t-0 pt-2 md:pt-0 md:pl-8 text-right">
                       <p className="text-muted-foreground">Net Pay</p>
-                      <p className="font-bold text-lg">${Number(record.net_salary).toLocaleString()}</p>
+                      <p className="font-bold text-lg">₹{Number(record.net_salary).toLocaleString('en-IN')}</p>
                     </div>
                   </div>
                 </div>

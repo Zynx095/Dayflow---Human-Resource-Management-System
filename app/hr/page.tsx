@@ -1,19 +1,26 @@
 "use client";
 
-import { useAuth } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { fetchApi } from "@/lib/api";
-import { Loader2, Check, X, Users, CheckCircle, AlertCircle, Sparkles } from "lucide-react";
+import { Loader2, Check, X, Calendar as CalendarIcon, AlertCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+interface LeaveRequest {
+  id: number;
+  employee_name: string;
+  leave_type: string;
+  start_date: string;
+  end_date: string;
+  reason: string;
+  status: string;
+}
 
 export default function HrDashboardPage() {
-  const { user } = useAuth();
-  const [requests, setRequests] = useState<any[]>([]);
+  const [requests, setRequests] = useState<LeaveRequest[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const [analytics, setAnalytics] = useState<any>(null);
-  const [analyticsLoading, setAnalyticsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchLeaveRequests();
@@ -30,9 +37,13 @@ export default function HrDashboardPage() {
 
   const fetchLeaveRequests = () => {
     setLoading(true);
+    setError(null);
     fetchApi("/leave/all")
       .then((data) => setRequests(data.records || []))
-      .catch(() => setRequests([]))
+      .catch((err) => {
+        setRequests([]);
+        setError(err.message || "Failed to load leave requests");
+      })
       .finally(() => setLoading(false));
   };
 
@@ -42,9 +53,10 @@ export default function HrDashboardPage() {
     setProcessing(p => [...p, id]);
     try {
       await fetchApi(`/leave/${id}/approve`, { method: "POST" });
-      fetchLeaveRequests();
-    } catch (e: any) {
-      alert(e.message || "Failed to approve");
+      setRequests(prev => prev.filter(r => r.id !== id));
+    } catch (e: unknown) {
+      const err = e as Error;
+      alert(err.message || "Failed to approve");
     } finally {
       setProcessing(p => p.filter(pid => pid !== id));
     }
@@ -54,110 +66,120 @@ export default function HrDashboardPage() {
     setProcessing(p => [...p, id]);
     try {
       await fetchApi(`/leave/${id}/reject`, { method: "POST" });
-      fetchLeaveRequests();
-    } catch (e: any) {
-      alert(e.message || "Failed to reject");
+      setRequests(prev => prev.filter(r => r.id !== id));
+    } catch (e: unknown) {
+      const err = e as Error;
+      alert(err.message || "Failed to reject");
     } finally {
       setProcessing(p => p.filter(pid => pid !== id));
     }
   };
 
+  const pendingRequests = requests.filter(r => r.status === 'PENDING');
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">HR Dashboard</h1>
-        <p className="text-muted-foreground mt-2">Manage employee leave requests and overview.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">HR Dashboard</h1>
+        <p className="text-muted-foreground mt-2">Manage employee leave requests and company overview.</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Workforce</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {analyticsLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-            ) : (
-              <div className="text-2xl font-bold">{analytics?.total_workforce ?? analytics?.totalWorkforce ?? 0}</div>
-            )}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Today's Attendance</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {analyticsLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-            ) : (
-              <div className="text-2xl font-bold">{analytics?.today_attendance ?? analytics?.todayAttendance ?? 0}</div>
-            )}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Action Required</CardTitle>
-            <AlertCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {analyticsLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-            ) : (
-              <div className="text-2xl font-bold">{analytics?.pending_leaves ?? analytics?.pendingLeaves ?? 0}</div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {!analyticsLoading && analytics?.ai_insight && (
-        <div className="rounded-lg bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 p-4">
-          <div className="flex items-start gap-3">
-            <Sparkles className="h-5 w-5 text-primary mt-0.5" />
+      <Card className="border-border/50 shadow-sm overflow-hidden">
+        <CardHeader className="bg-muted/10 border-b pb-4">
+          <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-primary">Dayflow Smart Insights</h3>
-              <p className="text-sm text-muted-foreground mt-1">{analytics.ai_insight}</p>
+              <CardTitle className="flex items-center gap-2">
+                <CalendarIcon className="w-5 h-5 text-primary" />
+                Pending Leave Requests
+              </CardTitle>
+              <CardDescription className="mt-1.5">Review and approve or reject employee leave.</CardDescription>
             </div>
+            {!loading && !error && (
+              <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                {pendingRequests.length} pending
+              </div>
+            )}
           </div>
-        </div>
-      )}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Pending Leave Requests</CardTitle>
-          <CardDescription>Review and approve or reject employee leave.</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+            <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+              <Loader2 className="w-8 h-8 animate-spin mb-4 text-primary" />
+              <p>Loading requests...</p>
             </div>
-          ) : requests.filter(r => r.status === 'PENDING').length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
-              No pending leave requests.
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center px-4">
+              <AlertCircle className="w-10 h-10 text-destructive mb-4" />
+              <p className="font-medium text-foreground mb-1">Unable to load requests</p>
+              <p className="text-sm text-muted-foreground mb-4">{error}</p>
+              <Button onClick={fetchLeaveRequests} variant="outline" size="sm">
+                Try again
+              </Button>
+            </div>
+          ) : pendingRequests.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center px-4">
+              <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mb-4">
+                <Check className="w-6 h-6 text-muted-foreground" />
+              </div>
+              <p className="font-medium text-foreground">All caught up!</p>
+              <p className="text-sm text-muted-foreground mt-1">No pending leave requests require your attention.</p>
             </div>
           ) : (
-            <div className="space-y-4">
-              {requests.filter(r => r.status === 'PENDING').map(req => (
-                <div key={req.id} className="flex items-center justify-between p-4 border rounded-lg bg-card">
-                  <div>
-                    <p className="font-medium">{req.employee_name} <span className="text-muted-foreground font-normal ml-2">({req.leave_type})</span></p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {new Date(req.start_date).toLocaleDateString()} - {new Date(req.end_date).toLocaleDateString()}
-                    </p>
-                    <p className="text-sm mt-2">"{req.reason}"</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive/10" disabled={processing.includes(req.id)} onClick={() => handleReject(req.id)}>
-                      {processing.includes(req.id) ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <X className="w-4 h-4 mr-1" />} Reject
-                    </Button>
-                    <Button size="sm" disabled={processing.includes(req.id)} onClick={() => handleApprove(req.id)}>
-                      {processing.includes(req.id) ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Check className="w-4 h-4 mr-1" />} Approve
-                    </Button>
-                  </div>
-                </div>
-              ))}
+            <div className="divide-y">
+              <AnimatePresence initial={false}>
+                {pendingRequests.map((req) => (
+                  <motion.div
+                    key={req.id}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0, overflow: 'hidden' }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 gap-4 hover:bg-muted/20 transition-colors">
+                      <div className="flex gap-4">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0">
+                          {req.employee_name?.charAt(0) || 'U'}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium text-foreground">{req.employee_name}</p>
+                            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
+                              {req.leave_type}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {new Date(req.start_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} - {new Date(req.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </p>
+                          <p className="text-sm mt-2 text-foreground/80 italic">&quot;{req.reason}&quot;</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2 sm:shrink-0 pt-2 sm:pt-0 border-t sm:border-0 mt-2 sm:mt-0">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="w-full sm:w-auto text-destructive hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
+                          disabled={processing.includes(req.id)}
+                          onClick={() => handleReject(req.id)}
+                          aria-label={`Reject leave request for ${req.employee_name}`}
+                        >
+                          {processing.includes(req.id) ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <X className="w-4 h-4 mr-2" />}
+                          Reject
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white"
+                          disabled={processing.includes(req.id)}
+                          onClick={() => handleApprove(req.id)}
+                          aria-label={`Approve leave request for ${req.employee_name}`}
+                        >
+                          {processing.includes(req.id) ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Check className="w-4 h-4 mr-2" />}
+                          Approve
+                        </Button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           )}
         </CardContent>
