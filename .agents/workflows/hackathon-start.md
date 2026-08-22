@@ -5,7 +5,7 @@
 **PREREQUISITES:** None (Start of hackathon).
 **OUTPUTS:** `requirements.md`, MVP definition, `architecture.md`, `implementation-plan.md`.
 **HANDOFF:** Architect → Builder.
-**HUMAN GATE:** GATE 1 (Scope/MVP) and GATE 2 (Architecture).
+**HUMAN GATE:** GATE 1 (Scope/MVP), GATE 2 (Architecture), and GATE 3 (STACK FREEZE).
 **TIME BUDGET:** T+00:00 to T+01:00.
 **STOP CONDITIONS:** Plan approved by Human Team Lead.
 
@@ -15,7 +15,9 @@
 3. **Targeted Research:** Conduct time-boxed research on existing solutions, competitors, and potential APIs.
 4. **Strategy Formulation:** Define the strongest solution direction, target user needs, and the unique selling proposition (USP).
 5. **MVP Definition:** Strip away all P2/P3 features to define the smallest, complete user journey. Stop and request **GATE 1** approval.
-6. **Architecture Proposal:** Create a simple, implementable system architecture, data flow, and tech stack proposal. Include an offline/local fallback strategy.
-7. **Risk Assessment:** Identify potential risks (e.g., API limits, complex integrations).
-8. **Schedule Creation:** Adopt the 8-hour time control budget.
-9. **Final Approval:** Request **GATE 2** approval before handing off to Builder.
+6. **Architecture Proposal:** Create a simple, implementable system architecture, data flow, and tech stack proposal. Include an offline/local fallback strategy. Request **GATE 2** approval.
+7. **Stack Selection:** Evaluate tech stack criteria using `templates/stack-selection.md`. Do not hardcode specific frameworks or providers (e.g., Next.js, Supabase, Groq) unless justified by requirements (e.g., relational data, auth, team skills).
+8. **Stack Freeze:** Request **GATE 3** approval for the finalized stack.
+9. **Risk Assessment:** Identify potential risks (e.g., API limits, complex integrations).
+10. **Schedule Creation:** Adopt the 8-hour time control budget.
+11. **Final Handoff:** Pass the plan to Builder.

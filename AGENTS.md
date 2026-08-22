@@ -33,7 +33,7 @@ Responsibilities:
 Backup/specialist coding agent.
 
 ### FreeLLMAPI
-Model provider and routing layer for Codex/Kilo.
+Model provider and routing layer for Codex/Kilo. FreeLLMAPI should be treated as an available inference abstraction, not as a mandatory dependency for every project.
 
 ### HUMAN (Team Lead)
 The ultimate authority and decision-maker.
@@ -77,10 +77,11 @@ The AI must not proceed through a mandatory gate without approval from the Human
 **Required Approval Gates:**
 - **GATE 1** — Scope/MVP approval
 - **GATE 2** — Architecture approval
-- **GATE 3** — Major scope/dependency change (DB schemas, AI providers, frameworks)
-- **GATE 4** — Feature freeze
-- **GATE 5** — Demo readiness
-- **GATE 6** — Final submission
+- **GATE 3** — STACK FREEZE (Architecture/Stack selection)
+- **GATE 4** — Major scope/dependency change (DB schemas, AI providers, frameworks)
+- **GATE 5** — Feature freeze
+- **GATE 6** — Demo readiness
+- **GATE 7** — Final submission
 
 **Format for Gated Requests:**
 ```

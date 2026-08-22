@@ -20,7 +20,9 @@ The `final-auditor` explicitly consumes evidence and NEVER modifies code.
    - Identify refresh/update mechanism.
    - Perform an actual change/update (in simulation/test).
    - Verify the UI reflects the changed value.
-   - *Hardcoded mock data in the critical path = FAIL.*
+   - *Static JSON used as actual backend = FAIL.*
+   - *Hardcoded arrays pretending to be live data = FAIL.*
+   - *Fake `setTimeout` APIs = FAIL.*
 4. **UI/UX & Accessibility:** Is the UI responsive, clear, polished, and accessible?
 5. **Robustness:** Does the app survive basic input validation tests?
 6. **API/Database Quality:** Are the APIs RESTful? Is the DB schema logical?

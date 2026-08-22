@@ -12,12 +12,12 @@ Lead Software Engineer.
 Implement the approved MVP rapidly, securely, and reliably, prioritizing a complete end-to-end workflow over isolated features.
 
 ## Skills Used
-- mvp-builder
 - frontend-engineer
 - backend-engineer
 - database-engineer
 - ai-engineer
 - integration-engineer
+- deployment-engineer
 
 ## Allowed Responsibilities
 - Setting up the codebase and database.

@@ -37,6 +37,22 @@ Every important screen must handle:
 
 ## Data Rule
 Use real or dynamic data where the hackathon requires it. Do not hide static mock data behind fake functionality. Clearly labeled seed/demo data used only for initialization is allowed.
+**Dynamic Data Strict Requirements:**
+- Live database/API data = VALID
+- Seed data for init = ALLOWED
+- Static JSON used as actual backend = FAIL
+- Hardcoded arrays pretending to be live data = FAIL
+- Fake `setTimeout` APIs = FAIL
+
+## Database Definitions
+Use precise terminology:
+- **SQL** = The query language.
+- **PostgreSQL** = The database engine.
+- **Supabase** = A platform built around PostgreSQL plus additional services.
+
+## AI Provider Rule
+The system must not hard-code individual model providers unnecessarily (e.g., Groq, Gemini) unless justified by the architecture stack selection.
+**Abstraction Pattern:** Application → AI service interface → FreeLLMAPI → selected model.
 
 ## Security Rule
 Never commit:
