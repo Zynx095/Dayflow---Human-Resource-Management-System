@@ -45,3 +45,42 @@ Get today's attendance record.
 Get the last 7 attendance records.
 - **Headers:** `Authorization: Bearer <token>` (requires `employee` role)
 - **Response (200):** `{ "records": [ ... ] }`
+
+## Leave Management (/api/leave)
+
+### POST /leave
+Employee submits a new leave request.
+- **Headers:** Authorization: Bearer <token> (requires employee role)
+- **Request Body:** { "leave_type": "PAID" | "SICK" | "UNPAID", "start_date": "YYYY-MM-DD", "end_date": "YYYY-MM-DD", "reason": "string" }
+- **Response (200):** { "message": "Leave request created", "id": 1 }
+- **Response (400):** Validation error (e.g. invalid dates, missing reason).
+
+### GET /leave/my
+Get all leave requests for the current employee.
+- **Headers:** Authorization: Bearer <token> (requires employee role)
+- **Response (200):** { "records": [ ... ] }
+
+### GET /leave/all
+HR gets all leave requests for all employees.
+- **Headers:** Authorization: Bearer <token> (requires hr role)
+- **Response (200):** { "records": [ ... ] }
+
+### GET /leave/:id
+Get details of a specific leave request. Employees can only access their own.
+- **Headers:** Authorization: Bearer <token>
+- **Response (200):** { "record": { ... } }
+- **Response (403):** Cannot access another employee's request.
+
+### POST /leave/:id/approve
+HR approves a pending leave request.
+- **Headers:** Authorization: Bearer <token> (requires hr role)
+- **Request Body (Optional):** { "admin_comment": "string" }
+- **Response (200):** { "message": "Leave request approved" }
+- **Response (400):** Cannot approve if status is not PENDING.
+
+### POST /leave/:id/reject
+HR rejects a pending leave request.
+- **Headers:** Authorization: Bearer <token> (requires hr role)
+- **Request Body (Optional):** { "admin_comment": "string" }
+- **Response (200):** { "message": "Leave request rejected" }
+- **Response (400):** Cannot reject if status is not PENDING.

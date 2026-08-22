@@ -35,3 +35,18 @@ CREATE TABLE IF NOT EXISTS attendance (
     FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE,
     UNIQUE (employee_id, date) -- Prevent duplicate check-in for the same day
 );
+
+
+CREATE TABLE IF NOT EXISTS leave_requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    employee_id INTEGER NOT NULL,
+    leave_type TEXT NOT NULL,
+    start_date TEXT NOT NULL,
+    end_date TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'PENDING',
+    admin_comment TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE
+);
