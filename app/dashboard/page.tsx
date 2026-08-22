@@ -11,7 +11,17 @@ import { motion } from "framer-motion";
 interface AttendanceRecord {
   check_in: string;
   check_out?: string;
+  worked_hours?: number;
   status: string;
+  payment_status?: string;
+}
+
+function formatDuration(ms: number) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  return `${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
 }
 
 export default function DashboardPage() {
@@ -19,6 +29,8 @@ export default function DashboardPage() {
   const [attendance, setAttendance] = useState<AttendanceRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [elapsed, setElapsed] = useState<number>(0);
 
   const fetchToday = () => {
     setLoading(true);
@@ -35,6 +47,21 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchToday();
   }, []);
+
+  useEffect(() => {
+    let animationFrameId: number;
+    if (attendance && !attendance.check_out) {
+      const checkInTime = new Date(attendance.check_in).getTime();
+      const updateTimer = () => {
+        setElapsed(Date.now() - checkInTime);
+        animationFrameId = requestAnimationFrame(updateTimer);
+      };
+      animationFrameId = requestAnimationFrame(updateTimer);
+    }
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, [attendance]);
 
   const [checkingIn, setCheckingIn] = useState(false);
   const [checkingOut, setCheckingOut] = useState(false);
@@ -96,15 +123,54 @@ export default function DashboardPage() {
                 </div>
               ) : attendance ? (
                 <div className="space-y-4">
-                  <div>
-                    <p className="text-2xl font-bold text-foreground">
-                      {attendance.check_out ? 'Completed' : 'Checked In'}
+                  <div className="flex justify-between items-center bg-secondary/10 p-4 rounded-lg border border-border">
+                    <div>
+                      <p className="text-sm font-semibold text-[hsl(var(--success))] uppercase tracking-wider mb-1">
+                        {attendance.check_out ? 'Completed' : 'Checked In'}
+                      </p>
+                      <p className="text-lg font-bold text-foreground">
+                        {new Date(attendance.check_in).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </div>
+                    {attendance.check_out && (
+                      <div className="text-right">
+                        <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+                          Out
+                        </p>
+                        <p className="text-lg font-bold text-foreground">
+                          {new Date(attendance.check_out).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-primary/5 p-4 rounded-lg border border-primary/10">
+                    <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">
+                      Worked
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      In: {new Date(attendance.check_in).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
-                      {attendance.check_out && ` • Out: ${new Date(attendance.check_out).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`}
+                    <p className="font-display text-2xl font-bold text-foreground">
+                      {attendance.check_out
+                        ? (attendance.worked_hours
+                            ? `${Math.floor(attendance.worked_hours)}h ${Math.floor((attendance.worked_hours % 1) * 60)}m`
+                            : formatDuration(new Date(attendance.check_out).getTime() - new Date(attendance.check_in).getTime()))
+                        : formatDuration(elapsed)}
                     </p>
                   </div>
+
+                  {attendance.check_out && attendance.payment_status && (
+                    <div className="bg-[hsl(var(--success))]/10 p-4 rounded-lg border border-[hsl(var(--success))]/20">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-semibold text-[hsl(var(--success))] uppercase tracking-wider">
+                          Payroll Status
+                        </p>
+                        <CheckCircle2 className="w-4 h-4 text-[hsl(var(--success))]" />
+                      </div>
+                      <p className="font-display text-lg font-bold text-foreground mt-1">
+                        {attendance.payment_status}
+                      </p>
+                    </div>
+                  )}
+
                   {error && (
                     <div className="text-xs text-destructive flex items-center gap-1 bg-destructive/10 p-2 rounded">
                       <AlertTriangle className="w-3 h-3" />
@@ -112,7 +178,7 @@ export default function DashboardPage() {
                     </div>
                   )}
                   {!attendance.check_out && (
-                    <Button onClick={handleCheckOut} className="w-full font-medium shadow-sm bg-secondary text-secondary-foreground hover:bg-secondary/80" disabled={checkingOut}>
+                    <Button onClick={handleCheckOut} className="w-full font-medium shadow-sm bg-[hsl(var(--warning))] text-[hsl(var(--warning-foreground))] hover:bg-[hsl(var(--warning))/0.9]" disabled={checkingOut}>
                       {checkingOut ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                       Check Out
                     </Button>

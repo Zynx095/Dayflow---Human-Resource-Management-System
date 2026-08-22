@@ -19,6 +19,14 @@ interface PayrollRecord {
   department: string;
 }
 
+function formatINR(value: number) {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 2
+  }).format(value);
+}
+
 export default function HrPayrollPage() {
   const [records, setRecords] = useState<PayrollRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -96,9 +104,9 @@ export default function HrPayrollPage() {
                     <th className="h-12 px-4 text-left font-medium">Employee</th>
                     <th className="h-12 px-4 text-left font-medium">Pay Period</th>
                     <th className="h-12 px-4 text-right font-medium">Base Salary</th>
-                    <th className="h-12 px-4 text-right font-medium text-[hsl(152,45%,38%)]">Allowances</th>
-                    <th className="h-12 px-4 text-right font-medium text-destructive">Deductions</th>
-                    <th className="h-12 px-4 text-right font-medium text-primary">Net Pay</th>
+                    <th className="h-12 px-4 text-right font-medium text-[hsl(var(--success))]">Allowances</th>
+                    <th className="h-12 px-4 text-right font-medium text-[hsl(var(--danger))]">Deductions</th>
+                    <th className="h-12 px-4 text-right font-medium text-[hsl(var(--primary))]">Net Pay</th>
                   </tr>
                 </thead>
                 <tbody className="[&_tr:last-child]:border-0 divide-y divide-border">
@@ -116,10 +124,10 @@ export default function HrPayrollPage() {
                         </div>
                       </td>
                       <td className="p-4 align-middle text-foreground/80">{record.pay_period}</td>
-                      <td className="p-4 align-middle text-right text-foreground/80">₹{Number(record.base_salary).toLocaleString('en-IN')}</td>
-                      <td className="p-4 align-middle text-right text-[hsl(152,45%,38%)] font-medium">+₹{Number(record.allowances).toLocaleString('en-IN')}</td>
-                      <td className="p-4 align-middle text-right text-destructive font-medium">-₹{Number(record.deductions).toLocaleString('en-IN')}</td>
-                      <td className="p-4 align-middle text-right font-bold text-foreground">₹{Number(record.net_salary).toLocaleString('en-IN')}</td>
+                      <td className="p-4 align-middle text-right text-foreground/80">{formatINR(Number(record.base_salary))}</td>
+                      <td className="p-4 align-middle text-right text-[hsl(var(--success))] font-medium">+{formatINR(Number(record.allowances))}</td>
+                      <td className="p-4 align-middle text-right text-[hsl(var(--danger))] font-medium">-{formatINR(Number(record.deductions))}</td>
+                      <td className="p-4 align-middle text-right font-bold text-[hsl(var(--primary))]">{formatINR(Number(record.net_salary))}</td>
                     </tr>
                   )) : (
                     <tr>

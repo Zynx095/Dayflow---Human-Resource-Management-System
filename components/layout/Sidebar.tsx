@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { LayoutDashboard, Calendar, Clock, LogOut, Users, DollarSign, Menu, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useState, useEffect } from "react";
+import { NotificationsPopover } from "@/components/NotificationsPopover";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -17,8 +18,9 @@ export function Sidebar() {
   const routes = isHr ? [
     { href: "/hr", label: "Dashboard", icon: LayoutDashboard },
     { href: "/hr/employees", label: "Employees", icon: Users },
-    { href: "/hr/leave", label: "Leave Requests", icon: Calendar },
     { href: "/hr/payroll", label: "Payroll", icon: DollarSign },
+    { href: "/hr/reports/attendance", label: "Attendance Report", icon: Clock },
+    { href: "/hr/reports/leave", label: "Leave Report", icon: Calendar },
   ] : [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard/profile", label: "My Profile", icon: Users },
@@ -60,16 +62,20 @@ export function Sidebar() {
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-card border-b flex items-center justify-between px-4 z-40">
         <div className="flex items-center gap-2">
+          <img src="/logo.jpeg" alt="Dayflow Logo" className="h-8 w-auto rounded-sm" />
           <h2 className="font-bold text-xl tracking-tight text-primary">Dayflow</h2>
         </div>
-        <button
-          onClick={() => setIsOpen(true)}
-          className="p-2 -mr-2 text-muted-foreground hover:text-foreground rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Open navigation menu"
-          aria-expanded={isOpen}
-        >
-          <Menu className="w-6 h-6" />
-        </button>
+        <div className="flex items-center gap-2">
+          <NotificationsPopover />
+          <button
+            onClick={() => setIsOpen(true)}
+            className="p-2 -mr-2 text-muted-foreground hover:text-foreground rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Open navigation menu"
+            aria-expanded={isOpen}
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        </div>
       </div>
 
       {/* Backdrop */}
@@ -89,9 +95,12 @@ export function Sidebar() {
         )}
       >
         <div className="p-6 border-b border-[hsl(20,30%,30%)] flex items-center justify-between">
-          <div>
-            <h2 className="font-display text-2xl font-bold tracking-tight text-[hsl(36,60%,97%)]">Dayflow</h2>
-            <p className="text-xs text-[hsl(39,25%,55%)] mt-1">HR Management System</p>
+          <div className="flex items-center gap-3">
+            <img src="/logo.jpeg" alt="Dayflow Logo" className="h-10 w-auto rounded-md" />
+            <div>
+              <h2 className="font-display text-2xl font-bold tracking-tight text-[hsl(36,60%,97%)]">Dayflow</h2>
+              <p className="text-xs text-[hsl(39,25%,55%)] mt-1">HR Management System</p>
+            </div>
           </div>
           <button
             onClick={() => setIsOpen(false)}
@@ -131,10 +140,11 @@ export function Sidebar() {
             <div className="w-8 h-8 rounded-full bg-[hsl(24,55%,44%)] text-white flex items-center justify-center font-bold text-xs shrink-0">
               {user?.name?.charAt(0) || 'U'}
             </div>
-            <div className="flex flex-col min-w-0">
+            <div className="flex flex-col min-w-0 flex-1">
               <span className="text-sm font-medium leading-none truncate">{user?.name}</span>
               <span className="text-xs text-[hsl(39,30%,70%)] mt-1 capitalize">{user?.role}</span>
             </div>
+            <NotificationsPopover />
           </div>
 
           <button

@@ -47,9 +47,12 @@ export default function SignupPage() {
       {/* Left Branding Panel (Hidden on mobile) */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center px-16 bg-[hsl(20,33%,18%)] relative overflow-hidden">
         <div className="z-10 max-w-xl">
-          <h1 className="font-display text-5xl font-bold text-[hsl(39,40%,92%)] mb-4">
-            Dayflow
-          </h1>
+          <div className="flex items-center gap-3 mb-4">
+            <img src="/logo.jpeg" alt="Dayflow Logo" className="h-10 w-10 rounded-sm" />
+            <h1 className="font-display text-5xl font-bold text-[hsl(39,40%,92%)]">
+              Dayflow
+            </h1>
+          </div>
           <p className="text-xl text-[hsl(39,25%,65%)] font-light leading-relaxed">
             Human Resource Management, Simplified.
           </p>
@@ -71,9 +74,10 @@ export default function SignupPage() {
       <div className="flex-1 flex items-center justify-center bg-background p-4 sm:p-8">
         <div className="w-full max-w-md">
           {/* Mobile Branding */}
-          <div className="lg:hidden mb-8 text-center">
+          <div className="flex flex-col items-center mb-8">
+            <img src="/logo.jpeg" alt="Dayflow Logo" className="h-16 w-16 rounded-lg shadow-sm mb-4" />
             <h1 className="font-display text-4xl font-bold text-primary mb-2">Dayflow</h1>
-            <p className="text-muted-foreground text-sm">Human Resource Management, Simplified.</p>
+            <p className="text-muted-foreground text-sm">Create your Dayflow account</p>
           </div>
 
           <div className="bg-card p-8 rounded-2xl warm-shadow-lg border border-border">

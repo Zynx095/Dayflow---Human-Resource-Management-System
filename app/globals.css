@@ -40,6 +40,8 @@
     --success-foreground: 39 40% 96%;
     --warning: 38 90% 50%;
     --warning-foreground: 20 45% 14%;
+    --info: 210 90% 45%;
+    --info-foreground: 210 100% 98%;
   }
 }
 
@@ -61,15 +63,12 @@
     text-wrap: balance;
   }
   .warm-shadow {
-    box-shadow: 0 1px 3px 0 rgb(44 24 16 / 0.06), 0 1px 2px -1px rgb(44 24 16 / 0.06);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
   }
   .warm-shadow-md {
-    box-shadow: 0 4px 6px -1px rgb(44 24 16 / 0.07), 0 2px 4px -2px rgb(44 24 16 / 0.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   }
   .warm-shadow-lg {
-    box-shadow: 0 10px 15px -3px rgb(44 24 16 / 0.08), 0 4px 6px -4px rgb(44 24 16 / 0.04);
-  }
-  .warm-glow {
-    box-shadow: 0 0 20px 0 rgb(181 101 45 / 0.08);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
   }
 }

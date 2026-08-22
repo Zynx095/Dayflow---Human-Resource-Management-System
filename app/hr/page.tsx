@@ -24,6 +24,8 @@ interface Analytics {
   todayAttendance?: number;
   pending_leaves?: number;
   pendingLeaves?: number;
+  attendanceRate?: number;
+  totalPayroll?: number;
 }
 
 export default function HrDashboardPage() {
@@ -96,7 +98,7 @@ export default function HrDashboardPage() {
         <p className="text-muted-foreground mt-2">Manage employee leave requests and company overview.</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-5">
         <Card className="border-l-4 border-l-primary border-y-border border-r-border warm-shadow-sm overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-card">
             <CardTitle className="text-sm font-medium text-foreground">Total Workforce</CardTitle>
@@ -141,6 +143,40 @@ export default function HrDashboardPage() {
               <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
             ) : (
               <div className="text-2xl font-bold text-foreground">{analytics?.pending_leaves ?? analytics?.pendingLeaves ?? 0}</div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-blue-500 border-y-border border-r-border warm-shadow-sm overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-card">
+            <CardTitle className="text-sm font-medium text-foreground">Attendance Rate</CardTitle>
+            <div className="bg-blue-500/10 p-2 rounded-md">
+              <CheckCircle className="h-4 w-4 text-blue-500" />
+            </div>
+          </CardHeader>
+          <CardContent className="bg-card">
+            {analyticsLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : (
+              <div className="text-2xl font-bold text-foreground">{analytics?.attendanceRate ?? 0}%</div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-green-500 border-y-border border-r-border warm-shadow-sm overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-card">
+            <CardTitle className="text-sm font-medium text-foreground">Payroll Summary</CardTitle>
+            <div className="bg-green-500/10 p-2 rounded-md">
+              <span className="font-bold text-green-500 text-sm leading-none">₹</span>
+            </div>
+          </CardHeader>
+          <CardContent className="bg-card">
+            {analyticsLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : (
+              <div className="text-2xl font-bold text-foreground">
+                {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(analytics?.totalPayroll ?? 0)}
+              </div>
             )}
           </CardContent>
         </Card>

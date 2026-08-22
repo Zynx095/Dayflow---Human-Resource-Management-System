@@ -44,6 +44,17 @@ export async function initDb() {
   const schemaStr = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf-8');
   await db.exec(schemaStr);
 
+  // Add payment_status if it doesn't exist (non-destructive migration)
+  try {
+    await dbInstance.run("ALTER TABLE attendance ADD COLUMN payment_status TEXT DEFAULT 'PENDING'");
+    console.log('Migrated: Added payment_status to attendance.');
+  } catch (e) {
+    // Column likely already exists
+    if (!e.message.includes('duplicate column name')) {
+      console.error('Migration notice:', e.message);
+    }
+  }
+
   // Seed only if no users exist
   const userCount = await db.get('SELECT COUNT(*) as count FROM users');
   if (parseInt(userCount.count) === 0) {
