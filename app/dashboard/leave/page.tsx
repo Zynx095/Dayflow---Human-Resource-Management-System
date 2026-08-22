@@ -79,12 +79,13 @@ export default function LeavePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Leave Management</h1>
+        <h1 className="text-3xl font-display font-bold tracking-tight">Leave Management</h1>
         <p className="text-muted-foreground mt-2">Request time off and view your history.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="border-border/50 shadow-sm">
+        <Card className="border-border shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1 h-full bg-accent" />
           <CardHeader>
             <CardTitle>Request Leave</CardTitle>
             <CardDescription>Submit a new leave request for approval.</CardDescription>
@@ -97,7 +98,7 @@ export default function LeavePage() {
                 </div>
               )}
               {success && (
-                <div className="p-3 text-sm text-green-800 bg-green-100 rounded-md border border-green-200">
+                <div className="p-3 text-sm text-success bg-success/10 rounded-md border border-success/20">
                   Leave request submitted successfully!
                 </div>
               )}
@@ -131,7 +132,7 @@ export default function LeavePage() {
                 <Input type="text" placeholder="Brief reason" required value={reason} onChange={e => setReason(e.target.value)} />
               </div>
 
-              <Button type="submit" disabled={submitting} className="w-full">
+              <Button type="submit" disabled={submitting} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
                 {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Submit Request
               </Button>
@@ -139,7 +140,7 @@ export default function LeavePage() {
           </CardContent>
         </Card>
 
-        <Card className="border-border/50 shadow-sm">
+        <Card className="border-border shadow-sm">
           <CardHeader>
             <CardTitle>Leave History</CardTitle>
             <CardDescription>Your past and pending requests.</CardDescription>
@@ -155,13 +156,13 @@ export default function LeavePage() {
                 <Button variant="outline" size="sm" onClick={fetchMyLeaves}>Try Again</Button>
               </div>
             ) : requests.length === 0 ? (
-              <div className="text-center p-4 text-muted-foreground border-2 border-dashed rounded-lg">
+              <div className="text-center p-4 text-muted-foreground border-2 border-dashed border-border/50 rounded-lg">
                 No leave requests found.
               </div>
             ) : (
               <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
                 {requests.map(req => (
-                  <div key={req.id} className="flex justify-between items-center p-3 border rounded-lg hover:bg-muted/30 transition-colors">
+                  <div key={req.id} className="flex justify-between items-center p-3 border border-border rounded-lg hover:bg-secondary/50 transition-colors">
                     <div>
                       <p className="font-medium text-sm text-foreground">{req.leave_type}</p>
                       <p className="text-xs text-muted-foreground mt-1">
@@ -169,9 +170,9 @@ export default function LeavePage() {
                       </p>
                     </div>
                     <div className={`text-xs px-2.5 py-1 rounded-full font-semibold ${
-                      req.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
-                      req.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                      'bg-yellow-100 text-yellow-800'
+                      req.status === 'APPROVED' ? 'bg-[hsl(152,35%,90%)] text-[hsl(152,45%,30%)]' :
+                      req.status === 'REJECTED' ? 'bg-[hsl(4,50%,93%)] text-[hsl(4,65%,40%)]' :
+                      'bg-[hsl(38,80%,90%)] text-[hsl(38,70%,30%)]'
                     }`}>
                       {req.status}
                     </div>
