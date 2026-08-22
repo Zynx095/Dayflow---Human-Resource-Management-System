@@ -27,11 +27,11 @@ export default function HrDashboardPage() {
     fetchAnalytics();
   }, []);
 
-  const fetchAnalytics = () => {
+  const fetchAnalytics = (data: anyp0: null) => {
     setAnalyticsLoading(true);
     fetchApi("/analytics/hr")
-      .then((data) => setAnalytics(data))
-      .catch(() => setAnalytics(null))
+      .then((data) => fetchAnalytics(data))
+      .catch(() => fetchAnalytics(null))
       .finally(() => setAnalyticsLoading(false));
   };
 
@@ -187,3 +187,7 @@ export default function HrDashboardPage() {
     </div>
   );
 }
+function setAnalyticsLoading(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
+
