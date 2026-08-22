@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { fetchApi } from "@/lib/api";
+import { Loader2, Check, X, Users, CheckCircle, AlertCircle, Sparkles } from "lucide-react";
 import { Loader2, Check, X, Calendar as CalendarIcon, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -22,9 +23,21 @@ export default function HrDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(true);
+
   useEffect(() => {
     fetchLeaveRequests();
+    fetchAnalytics();
   }, []);
+
+  const fetchAnalytics = () => {
+    setAnalyticsLoading(true);
+    fetchApi("/analytics/hr")
+      .then((data) => setAnalytics(data))
+      .catch(() => setAnalytics(null))
+      .finally(() => setAnalyticsLoading(false));
+  };
 
   const fetchLeaveRequests = () => {
     setLoading(true);
@@ -75,6 +88,64 @@ export default function HrDashboardPage() {
         <p className="text-muted-foreground mt-2">Manage employee leave requests and company overview.</p>
       </div>
 
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Workforce</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {analyticsLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : (
+              <div className="text-2xl font-bold">{analytics?.total_workforce ?? analytics?.totalWorkforce ?? 0}</div>
+            )}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Today's Attendance</CardTitle>
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {analyticsLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : (
+              <div className="text-2xl font-bold">{analytics?.today_attendance ?? analytics?.todayAttendance ?? 0}</div>
+            )}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Action Required</CardTitle>
+            <AlertCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {analyticsLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : (
+              <div className="text-2xl font-bold">{analytics?.pending_leaves ?? analytics?.pendingLeaves ?? 0}</div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {!analyticsLoading && analytics?.ai_insight && (
+        <div className="rounded-lg bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 p-4">
+          <div className="flex items-start gap-3">
+            <Sparkles className="h-5 w-5 text-primary mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-primary">Dayflow Smart Insights</h3>
+              <p className="text-sm text-muted-foreground mt-1">{analytics.ai_insight}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Pending Leave Requests</CardTitle>
+          <CardDescription>Review and approve or reject employee leave.</CardDescription>
       <Card className="border-border/50 shadow-sm overflow-hidden">
         <CardHeader className="bg-muted/10 border-b pb-4">
           <div className="flex items-center justify-between">

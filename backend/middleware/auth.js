@@ -1,32 +1,27 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-for-dev-only';
+const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_hackathon_key_do_not_commit_in_real_life';
 
-export function authenticateToken(req, res, next) {
+function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized: Missing token' });
-  }
+  if (!token) return res.status(401).json({ error: 'Unauthorized: Missing Token' });
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: 'Forbidden: Invalid token' });
-    }
+    if (err) return res.status(403).json({ error: 'Forbidden: Invalid Token' });
     req.user = user;
     next();
   });
 }
 
-export function requireRole(role) {
+function authorizeRole(role) {
   return (req, res, next) => {
-    if (!req.user) {
-      return res.status(401).json({ error: 'Unauthorized: Missing user context' });
-    }
-    if (req.user.role !== role) {
-      return res.status(403).json({ error: `Forbidden: Requires ${role} role` });
+    if (!req.user || req.user.role !== role) {
+      return res.status(403).json({ error: 'Forbidden: Insufficient permissions' });
     }
     next();
   };
 }
+
+module.exports = { authenticateToken, authorizeRole };
