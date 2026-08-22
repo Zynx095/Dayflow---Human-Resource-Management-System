@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌊 Dayflow HRMS
 
-## Getting Started
+> **The offline-first, locally secure HR Intelligence Platform engineered for the Indian Enterprise.**
 
-First, run the development server:
+---
+
+## 🚀 The Vision
+
+Cloud-based HR systems are often bloated, reliant on constant internet connectivity, and vulnerable to external data breaches. For Indian enterprises operating in diverse connectivity environments, HR operations cannot afford to halt when the internet drops.
+
+**Dayflow** is the solution. We built an enterprise-grade, locally-hosted Human Resource Management System that brings zero-latency performance, strict data sovereignty, and real-time analytics to the local network.
+
+---
+
+## ⚡ Core Features & Engineering
+
+We didn't just build a CRUD app; we engineered a secure, role-based ecosystem from the ground up.
+
+| Feature | Description |
+| --- | --- |
+| **Dayflow Insights Engine** | Real-time, localized analytical dashboard for HR officers. Tracks workforce attendance, pending leaves, and active employees without external API calls. |
+| **Smart ID Generation** | Automated, custom login IDs upon employee creation (`OIJODO20260001` - *Company + Initials + Year + Serial*), eliminating manual username management. |
+| **Dynamic Indian Payroll** | Automated Salary Math tailored for India. Computes Basic Salary (50% of Wage), HRA (50% of Basic), and Provident Fund natively in **INR (₹)** with `en-IN` formatting. |
+| **Enterprise Security** | Bulletproofed Express backend featuring strict JWT role-based access control (RBAC), custom middleware, and comprehensive IDOR & SQLi mitigation. |
+| **Real-Time Attendance** | Frictionless employee check-in/check-out system with dynamic visual status indicators (Present/Absent/On Leave). |
+| **Framer Motion UI** | A pixel-perfect, highly responsive Next.js frontend with staggered card entrances, skeleton loaders, and elegant state transitions. |
+
+---
+
+## 🛠️ The Architecture Stack
+
+* **Frontend:** Next.js, Tailwind CSS, Framer Motion, TypeScript, `lucide-react`.
+* **Backend:** Node.js, Express.js, Custom JWT Authentication.
+* **Database:** SQLite (Zero-config, offline-first, local persistence).
+* **Security:** Role-based Authorization Middleware, Parameterized Queries, Stateless Sessions.
+
+---
+
+## 💻 Local Setup & Deployment
+
+Get the entire Dayflow ecosystem running locally in under two minutes.
+
+**1. Clone the Repository**
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Zynx095/Dayflow---Human-Resource-Management-System.git
+cd Dayflow---Human-Resource-Management-System
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**2. Setup the Backend Engine**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cd backend
+npm install
+# Create a .env file and add your JWT_SECRET (or rely on the dev fallback)
+npm run dev
+# The Express server will spin up on port 5000 and initialize the SQLite schema
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
 
-## Learn More
+**3. Setup the Frontend UI**
+Open a new terminal window:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# From the root project directory
+npm install
+npm run dev
+# The Next.js frontend will be live at http://localhost:3000
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 👥 The Team
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Built from the ground up during an intensive hackathon sprint.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* **Yukith** – Backend Architecture, Database Design, Security & API Integration
+* **Pranathi** – Frontend Engineering, UI/UX Polish, Framer Motion & Localization
+
+---
+
+*Dayflow: Because your workforce data belongs on your local network.*
