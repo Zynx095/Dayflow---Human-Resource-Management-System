@@ -29,7 +29,10 @@ export default function HrDashboardPage() {
   const handleApprove = async (id: number) => {
     setProcessing(p => [...p, id]);
     try {
-      await fetchApi(`/leave/${id}/approve`, { method: "POST" });
+      await fetchApi(`/leave/${id}/approve`, { 
+        method: "POST",
+        body: JSON.stringify({ admin_comment: "Approved by HR" })
+      });
       fetchLeaveRequests();
     } catch (e: any) {
       alert(e.message || "Failed to approve");
@@ -41,7 +44,10 @@ export default function HrDashboardPage() {
   const handleReject = async (id: number) => {
     setProcessing(p => [...p, id]);
     try {
-      await fetchApi(`/leave/${id}/reject`, { method: "POST" });
+      await fetchApi(`/leave/${id}/reject`, { 
+        method: "POST",
+        body: JSON.stringify({ admin_comment: "Rejected by HR" })
+      });
       fetchLeaveRequests();
     } catch (e: any) {
       alert(e.message || "Failed to reject");

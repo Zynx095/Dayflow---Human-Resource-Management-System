@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -13,9 +12,7 @@ export function Sidebar() {
   const isHr = user?.role === 'hr';
   
   const routes = isHr ? [
-    { href: "/hr", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/hr/employees", label: "Employees", icon: Users },
-    { href: "/hr/leave", label: "Leave Requests", icon: Calendar },
+    { href: "/hr", label: "Leave Requests", icon: Calendar },
     { href: "/hr/payroll", label: "Payroll", icon: DollarSign },
   ] : [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -42,8 +39,8 @@ export function Sidebar() {
               href={route.href}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
-                isActive 
-                  ? "bg-primary text-primary-foreground" 
+                isActive
+                  ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
@@ -65,7 +62,7 @@ export function Sidebar() {
           </div>
         </div>
         
-        <button 
+        <button
           onClick={logout}
           className="flex w-full items-center gap-3 px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-md transition-colors"
         >
